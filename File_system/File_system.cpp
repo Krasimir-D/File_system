@@ -7,12 +7,6 @@
 
 int main()
 {
-	Date d;
-	Time t;
-	DateTime dt(d, t);
-
-	std::string str;
-	dt.toString(str);
-	std::cout << str;
+	
 }
 

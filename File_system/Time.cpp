@@ -32,7 +32,7 @@ Time::Time(uint8_t hour, uint8_t minutes, uint8_t seconds, bool isPm)
 
 void Time::setTime(uint8_t hour, uint8_t minutes, uint8_t seconds, bool isPm)
 {
-	if (hour < 1 || hour > 12 || minutes > 59 || seconds > 59)
+	if (hour > 12 || minutes > 59 || seconds > 59)
 		throw std::invalid_argument("Invalid time arguments!");
 
 	this->hour = hour;

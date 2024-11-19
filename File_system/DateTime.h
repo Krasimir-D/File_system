@@ -4,6 +4,7 @@
 
 struct DateTime
 {
+	DateTime() = default;
 	DateTime(Date date, Time time) : date(date), time(time) {}
 
 	void toString(std::string& str) const;
