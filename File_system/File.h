@@ -2,7 +2,6 @@
 #include "DateTime.h"
 
 // abstract base class
-template<typename T>
 class File
 {
 public:
