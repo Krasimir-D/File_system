@@ -1,6 +1,28 @@
 #include "ConcreteFile.h"
 #include <fstream>
 
+// helper functionс for ConcreteFile
+// specific logic therefore it would not make sense to move the later mentioned
+// functions in a utility(helper) file.
+namespace
+{
+	// helper function for reading the string data-members from a binary file
+	void loadStrFromBinFile(std::ifstream& input, std::string& str)
+	{
+		size_t length = 0;
+		input.read(reinterpret_cast<char*>(&length), sizeof(length));
+		str.resize(length, '\0');
+		input.read(&str[0], length);
+	}
+
+	void writeStringToBinFile(std::ofstream& out, const std::string& str)
+	{
+		size_t tempLen = str.length();
+		out.write(reinterpret_cast<const char*>(&tempLen), sizeof(tempLen));
+		out.write(str.data(), tempLen);
+	}
+}
+
 unsigned ConcreteFile::ID = 0;
 
 const std::string& ConcreteFile::getPath() const
@@ -28,23 +50,18 @@ DateTime ConcreteFile::getLastModified() const
 	return lastModified;
 }
 
+
 bool ConcreteFile::load(std::ifstream& input)
 {
 	if (!input)
 		return false;
 
 	input.read(reinterpret_cast<char*>(&uniqueId), sizeof(uniqueId));
-	
-	// reading the path
-	size_t tempLen = 0;
-	input.read(reinterpret_cast<char*>(&tempLen), sizeof(tempLen));
-	path.resize(tempLen, '\0');
-	input.read(&path[0], tempLen);
 
+	// reading the path
+	loadStrFromBinFile(input, path);
 	// reading the name
-	input.read(reinterpret_cast<char*>(&tempLen), sizeof(tempLen));
-	name.resize(tempLen, '\0');
-	input.read(&name[0], tempLen);
+	loadStrFromBinFile(input, name);
 
 	input.read(reinterpret_cast<char*>(&size), sizeof(size));
 
@@ -55,19 +72,16 @@ bool ConcreteFile::load(std::ifstream& input)
 	return true;
 }
 
+
 bool ConcreteFile::save(std::ofstream& out) const
 {
 	if (!out)
 		return false;
 
 	out.write(reinterpret_cast<const char*>(uniqueId), sizeof(uniqueId));
-	size_t tempLen = path.length();
-	out.write(reinterpret_cast<const char*>(&tempLen), sizeof(tempLen));
-	out.write(path.data(), tempLen);
-		
-	tempLen = name.length();
-	out.write(reinterpret_cast<const char*>(&tempLen), sizeof(tempLen));
-	out.write(name.data(), tempLen);
+	writeStringToBinFile(out, path);
+
+	writeStringToBinFile(out, name);
 
 	out.write(reinterpret_cast<const char*>(&size), sizeof(size));
 
@@ -80,16 +94,16 @@ bool ConcreteFile::save(std::ofstream& out) const
 
 ConcreteFile::ConcreteFile()
 	: uniqueId(ID++), path(""), name(""), size(0), created(),
-		lastAccessed(), lastModified()
+	lastAccessed(), lastModified()
 {
 }
 
 ConcreteFile::ConcreteFile(const ConcreteFile& other)
 	: uniqueId(ID++), created(), lastAccessed(), lastModified()
-{	
+{
 	this->path = other.path;
 	this->name = other.name;
-	this->size = other.size;	
+	this->size = other.size;
 }
 
 ConcreteFile& ConcreteFile::operator=(const ConcreteFile& other)

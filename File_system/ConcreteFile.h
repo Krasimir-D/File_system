@@ -25,6 +25,7 @@ public:
 	bool load(std::ifstream& input);
 	bool save(std::ofstream& out) const;
 
+// costructors and inner-hierarchy logic
 protected:
 	ConcreteFile();
 	/*ConcreteFile(const std::string& filename);
@@ -34,7 +35,7 @@ protected:
 
 	unsigned getId() const;
 	
-
+// Class fields region
 protected:
 	static unsigned ID;
 

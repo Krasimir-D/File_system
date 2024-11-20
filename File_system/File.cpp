@@ -14,11 +14,12 @@ File::File(std::ifstream& input, const std::string& destDir)
 File::File(const File& other)
 	: ConcreteFile(other)
 {
-	content = new uint8_t[size];
-	for (size_t i = 0; i < size; i++)
+	content = new uint8_t[other.contentSize];
+	for (size_t i = 0; i < other.contentSize; i++)
 	{
 		content[i] = other.content[i];
 	}
+	contentSize = other.contentSize;
 }
 
 File& File::operator=(const File& other)
@@ -28,14 +29,15 @@ File& File::operator=(const File& other)
 		uint8_t* tempContent = nullptr;
 		try
 		{
-			tempContent = new uint8_t[other.size];
-			for (size_t i = 0; i < other.size; i++)
+			tempContent = new uint8_t[other.contentSize];
+			for (size_t i = 0; i < other.contentSize; i++)
 			{
 				tempContent[i] = other.content[i];
 			}
 			ConcreteFile::operator=(other);
 			delete[] content;
 			content = tempContent;
+			contentSize = other.contentSize;
 		}
 		catch (const std::bad_alloc&)
 		{
@@ -52,24 +54,25 @@ File::~File() noexcept
 
 bool File::load(std::ifstream& input)
 {
-	input.seekg(0, std::ios::end);
-	unsigned tempSize = input.tellg();
-	input.seekg(0, std::ios::beg);
-
-	content = new uint8_t[tempSize];
-	input.read(reinterpret_cast<char*>(content), tempSize);
-	this->size = tempSize;
+	// copy the metadata
+	if (!ConcreteFile::load(input))
+		return false;
+	
+	input.read(reinterpret_cast<char*>(&contentSize), sizeof(contentSize));
+	content = new uint8_t[contentSize];
+	input.read(reinterpret_cast<char*>(content), contentSize);
 
 	return true;
 }
 
-bool File::save() const
+bool File::save(std::ofstream& out) const
 {
-	std::ofstream out(path, std::ios::binary);
-	if (!out.is_open())
-		throw std::runtime_error("Unable to open file for writing!");
+	// save the metadata
+	if (!ConcreteFile::save(out))
+		return false;
 
-	
+	out.write(reinterpret_cast<const char*>(&contentSize), sizeof(contentSize));
+	out.write(reinterpret_cast<const char*>(content), sizeof(content));
 }
 
 const uint8_t* File::getContent() const
