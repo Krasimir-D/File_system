@@ -7,6 +7,7 @@ class ConcreteFile
 public:
 	enum class Type
 	{
+		ConcreteFile,
 		File,
 		Directory,
 		Symlink
@@ -24,24 +25,30 @@ public:
 
 	bool load(std::ifstream& input);
 	bool save(std::ofstream& out) const;
+	ConcreteFile::Type getType() const;
 
+public:
+	virtual ~ConcreteFile() = default;
 // costructors and inner-hierarchy logic
 protected:
-	ConcreteFile();
+	ConcreteFile(Type type);
 	/*ConcreteFile(const std::string& filename);
 	ConcreteFile(const std::string& fileName, const std::string& directory);*/
 	ConcreteFile(const ConcreteFile& other);
 	ConcreteFile& operator=(const ConcreteFile& other);
+	ConcreteFile(ConcreteFile&& other) noexcept;
+	ConcreteFile& operator=(ConcreteFile&& other) noexcept;
 
 	unsigned getId() const;
 	
 // Class fields region
 protected:
 	static unsigned ID;
-
+	ConcreteFile* parent;
 
 	std::string path;
 	std::string name;
+	const Type type;
 	
 	// metadata
 	unsigned size;

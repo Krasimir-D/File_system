@@ -2,7 +2,7 @@
 #include <fstream>
 
 File::File(std::ifstream& input, const std::string& destDir)
-	: ConcreteFile(), content(nullptr)
+	: ConcreteFile(Type::File), content(nullptr)
 {
 	if (!input.is_open())
 		throw std::runtime_error("Unable to load file");
@@ -73,6 +73,11 @@ bool File::save(std::ofstream& out) const
 
 	out.write(reinterpret_cast<const char*>(&contentSize), sizeof(contentSize));
 	out.write(reinterpret_cast<const char*>(content), sizeof(content));
+}
+
+ConcreteFile* File::copy(const File& obj) 
+{
+	return new File(obj);
 }
 
 const uint8_t* File::getContent() const

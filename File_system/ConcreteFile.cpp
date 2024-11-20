@@ -92,14 +92,19 @@ bool ConcreteFile::save(std::ofstream& out) const
 	return true;
 }
 
-ConcreteFile::ConcreteFile()
-	: uniqueId(ID++), path(""), name(""), size(0), created(),
-	lastAccessed(), lastModified()
+ConcreteFile::Type ConcreteFile::getType() const
+{
+	return type;
+}
+
+ConcreteFile::ConcreteFile(Type type)
+	: uniqueId(ID++), path(""), name(""), type(type), size(0), created(),
+	lastAccessed(), lastModified() 
 {
 }
 
 ConcreteFile::ConcreteFile(const ConcreteFile& other)
-	: uniqueId(ID++), created(), lastAccessed(), lastModified()
+	: uniqueId(ID++), type(other.type), created(), lastAccessed(), lastModified()
 {
 	this->path = other.path;
 	this->name = other.name;
@@ -116,6 +121,34 @@ ConcreteFile& ConcreteFile::operator=(const ConcreteFile& other)
 		this->created = other.created;
 		this->lastAccessed = other.lastAccessed;
 		this->lastModified = other.lastModified;
+	}
+
+	return *this;
+}
+
+ConcreteFile::ConcreteFile(ConcreteFile&& other) noexcept
+	: uniqueId(ID++), type(other.type), size(0), created(), lastAccessed(), lastModified()
+{
+	std::swap(parent, other.parent);
+	std::swap(path, other.path);
+	std::swap(name, other.name);
+	std::swap(size, other.size);
+	std::swap(created, other.created);
+	std::swap(lastAccessed, other.lastAccessed);
+	std::swap(lastModified, other.lastModified);
+}
+
+ConcreteFile& ConcreteFile::operator=(ConcreteFile&& other) noexcept
+{
+	if (this != &other)
+	{
+		std::swap(parent, other.parent);
+		std::swap(path, other.path);
+		std::swap(name, other.name);
+		std::swap(size, other.size);
+		std::swap(created, other.created);
+		std::swap(lastAccessed, other.lastAccessed);
+		std::swap(lastModified, other.lastModified);
 	}
 
 	return *this;
