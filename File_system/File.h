@@ -1,46 +1,21 @@
 #pragma once
-#include "DateTime.h"
+#include "ConcreteFile.h"
 
-// abstract base class
-class File
+class File : public ConcreteFile
 {
 public:
-	File();
-	File(const std::string);
-	File(const std::string& fileName, const std::string& directory);
+	File(std::ifstream& input, const std::string& destDir);
 	File(const File& other);
 	File& operator=(const File& other);
-	File(File&& other) noexcept;
-	File& operator=(File&& other) noexcept;
-	virtual ~File() = 0;
+	~File() noexcept;
 
-	virtual File* clone() const = 0;
+	bool load(std::ifstream& input);
+	bool save() const;
 
-	virtual void save(std::ofstream& out) const = 0;
-	void load(std::ifstream& in);
+	const uint8_t* getContent() const;
 
-	const std::string& getPath() const;
-	const std::string& getName() const;
-	const std::string& getType() const;
-
-	DateTime getLastAccessed() const;
-	DateTime getLastModified() const;
-
-protected:
-	struct Metadata
-	{
-		unsigned size;
-		std::string type;
-		DateTime lastAccessed;
-		DateTime lastModified;
-	};
-
-protected:
-	const unsigned uniqueId;
-
-	std::string path;
-	std::string name;
-	
-	Metadata metadata;
+private:
+	uint8_t* content;
+	const Type type = ConcreteFile::Type::File; 
 };
 

@@ -130,6 +130,7 @@
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="Directory.cpp" />
+    <ClCompile Include="ConcreteFile.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="File_system.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="Date.h" />
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="Directory.h" />
+    <ClInclude Include="ConcreteFile.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Symlink.h" />

@@ -1,7 +1,11 @@
 #pragma once
-#include "File.h"
+#include "ConcreteFile.h"
 
-class Directory
+class Directory : public ConcreteFile
 {
+public:
+
+private:
+
 };
 
