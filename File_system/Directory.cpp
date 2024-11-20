@@ -5,6 +5,22 @@ ConcreteFile* Directory::copy(const Directory& obj)
 	return new Directory(obj);
 }
 
+const ConcreteFile& Directory::operator[](size_t index) const
+{
+	if (index >= size)
+		throw std::invalid_argument("Invalid index argument!");
+
+	return *content[index];
+}
+
+ConcreteFile& Directory::operator[](size_t index)
+{
+	if (index >= size)
+		throw std::invalid_argument("Invalid index argument!");
+
+	return *content[index];
+}
+
 void Directory::add(const ConcreteFile& newFile)
 {
 	if (size == capacity)
@@ -13,16 +29,22 @@ void Directory::add(const ConcreteFile& newFile)
 
 }
 
-ConcreteFile* deductedTypeCopy(const ConcreteFile* obj)
+void Directory::remove(const ConcreteFile& file)
 {
-	if (obj->getType() == ConcreteFile::Type::File)
-		return File::copy(*reinterpret_cast<File*>(&obj));
 
-	else if (obj->getType() == ConcreteFile::Type::Directory)
-		return Directory::copy(*reinterpret_cast<Directory*>(&obj));
-
-	return Symlink::copy(*reinterpret_cast<Symlink*>(&obj));
 }
+
+bool Directory::load(std::ifstream& input)
+{
+	return false;
+}
+
+bool Directory::save(std::ofstream& out) const
+{
+	return false;
+}
+
+
 
 void Directory::copyFrom(const Directory& other)
 {
@@ -81,6 +103,17 @@ void Directory::resize(unsigned newCap)
 		delete[] temp;
 		throw;
 	}
+}
+
+ConcreteFile* Directory::deductedTypeCopy(const ConcreteFile* obj)
+{
+	if (obj->getType() == ConcreteFile::Type::File)
+		return File::copy(*reinterpret_cast<File*>(&obj));
+
+	else if (obj->getType() == ConcreteFile::Type::Directory)
+		return Directory::copy(*reinterpret_cast<Directory*>(&obj));
+
+	return Symlink::copy(*reinterpret_cast<Symlink*>(&obj));
 }
 
 Directory::Directory()
