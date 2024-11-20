@@ -59,5 +59,9 @@ protected:
 private:
 	// is not declared as a constant but is treated as one. No one can access it and modify it
 	unsigned uniqueId;
+
+private:
+	static void loadStrFromBinFile(std::ifstream& input, std::string& str);
+	static void writeStringToBinFile(std::ofstream& out, const std::string& str);
 };
 

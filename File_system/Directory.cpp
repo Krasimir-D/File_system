@@ -5,6 +5,25 @@ ConcreteFile* Directory::copy(const Directory& obj)
 	return new Directory(obj);
 }
 
+void Directory::add(const ConcreteFile& newFile)
+{
+	if (size == capacity)
+		resize(capacity * 2);
+
+
+}
+
+ConcreteFile* deductedTypeCopy(const ConcreteFile* obj)
+{
+	if (obj->getType() == ConcreteFile::Type::File)
+		return File::copy(*reinterpret_cast<File*>(&obj));
+
+	else if (obj->getType() == ConcreteFile::Type::Directory)
+		return Directory::copy(*reinterpret_cast<Directory*>(&obj));
+
+	return Symlink::copy(*reinterpret_cast<Symlink*>(&obj));
+}
+
 void Directory::copyFrom(const Directory& other)
 {
 	ConcreteFile** temp = nullptr;
@@ -14,15 +33,7 @@ void Directory::copyFrom(const Directory& other)
 		temp = new ConcreteFile * [other.capacity]{};
 		for (size_t i = 0; i < other.size; i++)
 		{
-			// the static casts are valid, because through the
-			if (other.content[i]->getType() == Type::File)
-				temp[i] = File::copy(*reinterpret_cast<File*>(other.content[i]));
-
-			else if (other.content[i]->getType() == Type::Directory)
-				temp[i] = Directory::copy(*reinterpret_cast<Directory*>(other.content[i]));
-
-			else
-				temp[i] = Symlink::copy(*reinterpret_cast<Symlink*>(other.content[i]));
+			temp[i] = deductedTypeCopy(other.content[i]);
 		}
 		free();
 		content = temp;

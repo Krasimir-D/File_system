@@ -1,27 +1,7 @@
 #include "ConcreteFile.h"
 #include <fstream>
 
-// helper functionс for ConcreteFile
-// specific logic therefore it would not make sense to move the later mentioned
-// functions in a utility(helper) file.
-namespace
-{
-	// helper function for reading the string data-members from a binary file
-	void loadStrFromBinFile(std::ifstream& input, std::string& str)
-	{
-		size_t length = 0;
-		input.read(reinterpret_cast<char*>(&length), sizeof(length));
-		str.resize(length, '\0');
-		input.read(&str[0], length);
-	}
 
-	void writeStringToBinFile(std::ofstream& out, const std::string& str)
-	{
-		size_t tempLen = str.length();
-		out.write(reinterpret_cast<const char*>(&tempLen), sizeof(tempLen));
-		out.write(str.data(), tempLen);
-	}
-}
 
 unsigned ConcreteFile::ID = 0;
 
@@ -99,7 +79,7 @@ ConcreteFile::Type ConcreteFile::getType() const
 
 ConcreteFile::ConcreteFile(Type type)
 	: uniqueId(ID++), path(""), name(""), type(type), size(0), created(),
-	lastAccessed(), lastModified() 
+	lastAccessed(), lastModified()
 {
 }
 
@@ -157,6 +137,21 @@ ConcreteFile& ConcreteFile::operator=(ConcreteFile&& other) noexcept
 unsigned ConcreteFile::getId() const
 {
 	return uniqueId;
+}
+
+void ConcreteFile::loadStrFromBinFile(std::ifstream& input, std::string& str)
+{
+	size_t length = 0;
+	input.read(reinterpret_cast<char*>(&length), sizeof(length));
+	str.resize(length, '\0');
+	input.read(&str[0], length);
+}
+
+void ConcreteFile::writeStringToBinFile(std::ofstream& out, const std::string& str)
+{
+	size_t tempLen = str.length();
+	out.write(reinterpret_cast<const char*>(&tempLen), sizeof(tempLen));
+	out.write(str.data(), tempLen);
 }
 
 

@@ -34,6 +34,8 @@ private:
 	void free();
 	void resize(unsigned newCap);
 
+	static ConcreteFile* deductedTypeCopy(const ConcreteFile* obj);
+
 private:
 	ConcreteFile** content;
 	size_t size;
