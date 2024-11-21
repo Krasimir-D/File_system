@@ -5,15 +5,31 @@
 #include <ctime>
 #include "DateTime.h"
 #include <fstream>
-
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 
+
+enum class Type
+{
+	NAME, SIZE, CONTENT, CRDATE, MDATE
+};
+
+struct Filter
+{
+	Type type;
+	union Value
+	{
+		std::string name;
+		unsigned size;
+		std::vector<uint8_t> content;
+		DateTime date;
+	} value;
+
+};
+
 int main()
 {
-	
+
 }
 
 
