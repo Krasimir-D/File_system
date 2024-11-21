@@ -15,6 +15,11 @@ const std::string& ConcreteFile::getName() const
 	return name;
 }
 
+unsigned ConcreteFile::getSize() const
+{
+	return size;
+}
+
 DateTime ConcreteFile::getTimeOfCreation() const
 {
 	return created;
@@ -109,7 +114,7 @@ ConcreteFile& ConcreteFile::operator=(const ConcreteFile& other)
 ConcreteFile::ConcreteFile(ConcreteFile&& other) noexcept
 	: uniqueId(ID++), type(other.type), size(0), created(), lastAccessed(), lastModified()
 {
-	std::swap(parent, other.parent);
+	//std::swap(parent, other.parent);
 	std::swap(path, other.path);
 	std::swap(name, other.name);
 	std::swap(size, other.size);
@@ -122,7 +127,7 @@ ConcreteFile& ConcreteFile::operator=(ConcreteFile&& other) noexcept
 {
 	if (this != &other)
 	{
-		std::swap(parent, other.parent);
+		//std::swap(parent, other.parent);
 		std::swap(path, other.path);
 		std::swap(name, other.name);
 		std::swap(size, other.size);

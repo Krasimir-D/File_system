@@ -17,8 +17,7 @@ public:
 	const std::string& getPath() const;
 	const std::string& getName() const;
 
-	//const ConcreteFile::Type getType() const;
-
+	unsigned getSize() const;
 	DateTime getTimeOfCreation() const;
 	DateTime getLastAccessed() const;
 	DateTime getLastModified() const;
@@ -28,7 +27,7 @@ public:
 	ConcreteFile::Type getType() const;
 
 public:
-	virtual ~ConcreteFile() = default;
+	~ConcreteFile() = default;
 // costructors and inner-hierarchy logic
 protected:
 	ConcreteFile(Type type);
@@ -44,14 +43,14 @@ protected:
 // Class fields region
 protected:
 	static unsigned ID;
-	ConcreteFile* parent;
+	//ConcreteFile* parent;
 
 	std::string path;
 	std::string name;
 	const Type type;
 	
 	// metadata
-	unsigned size;
+	unsigned size;  // not entirely sure whether each file type should have this metadata. 
 	DateTime created;
 	DateTime lastAccessed;
 	DateTime lastModified;

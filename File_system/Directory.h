@@ -1,44 +1,29 @@
 #pragma once
 #include "File.h"
 #include "Symlink.h"
+#include <vector>
 
 class Directory : public ConcreteFile
 {
 public:
 	Directory();
-	Directory(const Directory& other);
-	Directory& operator=(const Directory& other);
-	Directory(Directory&& other) noexcept;
-	Directory& operator=(Directory&& other) noexcept;
-	~Directory() noexcept;
 
-	const ConcreteFile* const* getContent() const;
-	size_t getSize() const;
-	size_t getCapacity() const;
-
+	const std::vector<File*>& getFiles() const;
+	const std::vector<Symlink*>& getSymlinks() const;
+	const std::vector<Directory*>& getDirectories() const;
+	
 	static ConcreteFile* copy(const Directory& obj);
 
-	const ConcreteFile& operator[](size_t index) const;
-	ConcreteFile& operator[](size_t index);
-
 	// imports a file
-	void add(const ConcreteFile& newFile);
-	void remove(const ConcreteFile& file);
+	void add(const ConcreteFile* newFile);
+	void remove(const ConcreteFile* file);
 	
 	bool load(std::ifstream& input);
 	bool save(std::ofstream& out) const;
 
 private:
-	void copyFrom(const Directory& other);
-	void moveFrom(Directory&& other) noexcept;
-	void free();
-	void resize(unsigned newCap);
-
-	static ConcreteFile* deductedTypeCopy(const ConcreteFile* obj);
-
-private:
-	ConcreteFile** content;
-	size_t size;
-	size_t capacity;
+	std::vector<File*> files; // leafs
+	std::vector<Symlink*> symlinks; // leafs
+	std::vector<Directory*> directories; // children
 };
 
