@@ -43,10 +43,9 @@ bool ConcreteFile::load(std::ifstream& input)
 
 	input.read(reinterpret_cast<char*>(&uniqueId), sizeof(uniqueId));
 
-	// reading the path
-	loadStrFromBinFile(input, path);
-	// reading the name
-	loadStrFromBinFile(input, name);
+	loadStrFromBinFile(input, parent.hardAddress); // reading the path to the parent file
+	loadStrFromBinFile(input, path); // reading the path	
+	loadStrFromBinFile(input, name); // reading the name
 
 	input.read(reinterpret_cast<char*>(&size), sizeof(size));
 
@@ -63,10 +62,11 @@ bool ConcreteFile::save(std::ofstream& out) const
 	if (!out)
 		return false;
 
-	out.write(reinterpret_cast<const char*>(uniqueId), sizeof(uniqueId));
-	writeStringToBinFile(out, path);
+	out.write(reinterpret_cast<const char*>(&uniqueId), sizeof(uniqueId));
 
-	writeStringToBinFile(out, name);
+	writeStringToBinFile(out, parent.hardAddress); // writing path to the parent file
+	writeStringToBinFile(out, path); // writing the path to the current file
+	writeStringToBinFile(out, name); // writing the name of the current file
 
 	out.write(reinterpret_cast<const char*>(&size), sizeof(size));
 
@@ -83,14 +83,22 @@ ConcreteFile::Type ConcreteFile::getType() const
 }
 
 ConcreteFile::ConcreteFile(Type type)
-	: uniqueId(ID++), path(""), name(""), type(type), size(0), created(),
+	: uniqueId(ID++), parent(), path(""), name(""), type(type), size(0), created(),
 	lastAccessed(), lastModified()
 {
+}
+
+ConcreteFile::ConcreteFile(const FileLocationPair& parent, Type type, const std::string& fileName, const std::string& directory)
+	: ConcreteFile(type)
+{
+	this->parent = parent;
+	name = fileName;
 }
 
 ConcreteFile::ConcreteFile(const ConcreteFile& other)
 	: uniqueId(ID++), type(other.type), created(), lastAccessed(), lastModified()
 {
+	this->parent = other.parent; // shallow copy of the address in memory could be a desired implementation here
 	this->path = other.path;
 	this->name = other.name;
 	this->size = other.size;
@@ -100,6 +108,7 @@ ConcreteFile& ConcreteFile::operator=(const ConcreteFile& other)
 {
 	if (this != &other)
 	{
+		this->parent = other.parent;
 		this->path = other.path;
 		this->name = other.name;
 		this->size = other.size;
@@ -114,7 +123,7 @@ ConcreteFile& ConcreteFile::operator=(const ConcreteFile& other)
 ConcreteFile::ConcreteFile(ConcreteFile&& other) noexcept
 	: uniqueId(ID++), type(other.type), size(0), created(), lastAccessed(), lastModified()
 {
-	//std::swap(parent, other.parent);
+	std::swap(parent, other.parent);
 	std::swap(path, other.path);
 	std::swap(name, other.name);
 	std::swap(size, other.size);
@@ -127,7 +136,7 @@ ConcreteFile& ConcreteFile::operator=(ConcreteFile&& other) noexcept
 {
 	if (this != &other)
 	{
-		//std::swap(parent, other.parent);
+		std::swap(parent, other.parent);
 		std::swap(path, other.path);
 		std::swap(name, other.name);
 		std::swap(size, other.size);

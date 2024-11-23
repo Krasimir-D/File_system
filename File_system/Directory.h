@@ -7,6 +7,7 @@ class Directory : public ConcreteFile
 {
 public:
 	Directory();
+	Directory(const FileLocationPair& parent, Type type, const std::string& fileName, const std::string& directory = "");
 
 	const std::vector<File*>& getFiles() const;
 	const std::vector<Symlink*>& getSymlinks() const;
@@ -20,6 +21,13 @@ public:
 	
 	bool load(std::ifstream& input);
 	bool save(std::ofstream& out) const;
+
+private:
+	template<typename T>
+	bool saveChildFiles(const std::vector<T*>& fileContainer, std::ofstream& out) const;
+
+	template<typename T>
+	bool loadChildFiles(std::vector<T>& fileContainer, std::ifstream& input);
 
 private:
 	std::vector<File*> files; // leafs

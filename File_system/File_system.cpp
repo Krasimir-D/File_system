@@ -2,34 +2,32 @@
 //
 
 #include <iostream>
-#include <ctime>
-#include "DateTime.h"
+#include "Directory.h"
+#include "FileSystem.h"
 #include <fstream>
-#include <string>
-#include <vector>
-
-
-enum class Type
-{
-	NAME, SIZE, CONTENT, CRDATE, MDATE
-};
-
-struct Filter
-{
-	Type type;
-	union Value
-	{
-		std::string name;
-		unsigned size;
-		std::vector<uint8_t> content;
-		DateTime date;
-	} value;
-
-};
+//enum class Type
+//{
+//	NAME, SIZE, CONTENT, CRDATE, MDATE
+//};
+//
+//struct Filter
+//{
+//	Type type;
+//	union Value
+//	{
+//		std::string name;
+//		unsigned size;
+//		std::vector<uint8_t> content;
+//		DateTime date;
+//	} value;
+//
+//};
 
 int main()
 {
-
+	FileSystem sys("MySystem");
+	sys.importFile("to_imp.txt");
+	
 }
 
 

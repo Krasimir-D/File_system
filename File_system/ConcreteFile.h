@@ -30,20 +30,31 @@ public:
 	~ConcreteFile() = default;
 // costructors and inner-hierarchy logic
 protected:
+	struct FileLocationPair
+	{
+		ConcreteFile* ramAddress;
+		std::string hardAddress;
+	};
+
 	ConcreteFile(Type type);
-	/*ConcreteFile(const std::string& filename);
-	ConcreteFile(const std::string& fileName, const std::string& directory);*/
+	//ConcreteFile(Type type, )
+	ConcreteFile(const FileLocationPair& parent, Type type, const std::string& fileName, const std::string& directory = "");
 	ConcreteFile(const ConcreteFile& other);
 	ConcreteFile& operator=(const ConcreteFile& other);
 	ConcreteFile(ConcreteFile&& other) noexcept;
 	ConcreteFile& operator=(ConcreteFile&& other) noexcept;
 
 	unsigned getId() const;
+
+// helper functions designed to help serialize/ deserialize the file objects 
+protected:
+	static void loadStrFromBinFile(std::ifstream& input, std::string& str);
+	static void writeStringToBinFile(std::ofstream& out, const std::string& str);
 	
 // Class fields region
 protected:
 	static unsigned ID;
-	//ConcreteFile* parent;
+	FileLocationPair parent;
 
 	std::string path;
 	std::string name;
@@ -59,8 +70,5 @@ private:
 	// is not declared as a constant but is treated as one. No one can access it and modify it
 	unsigned uniqueId;
 
-private:
-	static void loadStrFromBinFile(std::ifstream& input, std::string& str);
-	static void writeStringToBinFile(std::ofstream& out, const std::string& str);
 };
 

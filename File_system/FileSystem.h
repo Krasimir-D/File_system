@@ -4,13 +4,14 @@
 class FileSystem
 {	
 public:
-	FileSystem();
+	FileSystem(const std::string& systemName);
 	FileSystem(const FileSystem& other);
 	FileSystem& operator=(const FileSystem& other);
 	FileSystem(FileSystem&& other);
 	FileSystem& operator=(FileSystem&& other);
 	~FileSystem();
 
+	// commands region. They will be invoked through the UI class via command objects
 	void printWorkingDir() const;
 	void changeDir(const std::string& newDir);
 	void list(const std::string& targetDir);
@@ -19,18 +20,20 @@ public:
 	void remove(const std::vector<std::string>& targetFiles);
 	void makeDirectory(const std::vector<std::string>& directories);
 	void removeDirectory(const std::vector<std::string>& targetDirectories);
-	void importFile(const std::string& targetFile, const char* destinationDir = nullptr);
+	bool importFile(const std::string& targetFile, const std::string& targetDir = "");
 	void status(const std::vector<std::string>& targetFiles) const;
 	void locate() const;  // TO_DO: filter logic 
 	void exit() const;
 
-	void save(const char* path = nullptr) const;
-	void load(const std::string& filepath);
+	// serialize/ deserialize functions
+	bool save(const char* path = nullptr) const;
+	bool load(const std::string& filepath);
 
 private:
 	// file lookup func
 
 private:
+	std::string systemName;
 	Directory* root;
 	Directory* toggledDir;
 	bool isActive;
