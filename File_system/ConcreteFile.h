@@ -17,41 +17,51 @@ public:
 	const std::string& getPath() const;
 	const std::string& getName() const;
 
+	const char* getTypeStr() const;
+
+	unsigned getId() const;
 	unsigned getSize() const;
 	DateTime getTimeOfCreation() const;
 	DateTime getLastAccessed() const;
 	DateTime getLastModified() const;
 
+	void stat() const;
+
 	bool load(std::ifstream& input);
 	bool save(std::ofstream& out) const;
 	ConcreteFile::Type getType() const;
+	const ConcreteFile* getParentRamAddress() const;
 
 public:
 	~ConcreteFile() = default;
-// costructors and inner-hierarchy logic
-protected:
+	// costructors and inner-hierarchy logic
+public:
 	struct FileLocationPair
 	{
-		ConcreteFile* ramAddress;
+		FileLocationPair() = default;
+		FileLocationPair(const ConcreteFile* ramAdd, const std::string& hardAdd)
+			: ramAddress(ramAdd), hardAddress(hardAdd) {}
+
+		const ConcreteFile* ramAddress;
 		std::string hardAddress;
 	};
 
 	ConcreteFile(Type type);
 	//ConcreteFile(Type type, )
-	ConcreteFile(const FileLocationPair& parent, Type type, const std::string& fileName, const std::string& directory = "");
+	ConcreteFile(const FileLocationPair& parent, Type type, const std::string& path, const std::string& name, const std::string& directory = "");
+	ConcreteFile(Type type, const std::string& fileName, const std::string& directory = "");
 	ConcreteFile(const ConcreteFile& other);
 	ConcreteFile& operator=(const ConcreteFile& other);
 	ConcreteFile(ConcreteFile&& other) noexcept;
 	ConcreteFile& operator=(ConcreteFile&& other) noexcept;
 
-	unsigned getId() const;
 
-// helper functions designed to help serialize/ deserialize the file objects 
+	// helper functions designed to help serialize/ deserialize the file objects 
 protected:
 	static void loadStrFromBinFile(std::ifstream& input, std::string& str);
 	static void writeStringToBinFile(std::ofstream& out, const std::string& str);
-	
-// Class fields region
+
+	// Class fields region
 protected:
 	static unsigned ID;
 	FileLocationPair parent;
@@ -59,7 +69,7 @@ protected:
 	std::string path;
 	std::string name;
 	const Type type;
-	
+
 	// metadata
 	unsigned size;  // not entirely sure whether each file type should have this metadata. 
 	DateTime created;

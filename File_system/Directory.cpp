@@ -2,12 +2,17 @@
 #include <fstream>
 
 Directory::Directory()
-	: ConcreteFile(Type::Directory)
+	:ConcreteFile(Type::Directory)
 {
 }
 
-Directory::Directory(const FileLocationPair& parent, Type type, const std::string& fileName, const std::string& directory)
-	: ConcreteFile(parent, type, fileName)
+Directory::Directory(const std::string& filename)
+	: ConcreteFile(Type::Directory, filename, "")
+{
+}
+
+Directory::Directory(const FileLocationPair& parent, const std::string& path, const std::string& name)
+	: ConcreteFile(parent, Type::Directory, path, name)
 {
 }
 
@@ -31,18 +36,22 @@ ConcreteFile* Directory::copy(const Directory& obj)
 	return new Directory(obj);
 }
 
-void Directory::add(const ConcreteFile* newFile)
+void Directory::addFile(File& newFile, const std::string& targetDir)
 {
-	if (newFile->getType() == Type::File)
-		files.push_back(reinterpret_cast<File*>(&newFile));
+	files.push_back(&newFile);
+	size += newFile.getSize();
+}
 
-	else if (newFile->getType() == Type::Directory)
-		directories.push_back(reinterpret_cast<Directory*>(&newFile));
+void Directory::addDir(Directory& newDir, const std::string& targetDir)
+{
+	directories.push_back(&newDir);
+	size += newDir.getSize();
+}
 
-	else
-		symlinks.push_back(reinterpret_cast<Symlink*>(&newFile));
-
-	size += newFile->getSize();
+void Directory::addSym(Symlink& newSym, const std::string& targetDir)
+{
+	symlinks.push_back(&newSym);
+	size += newSym.getSize();
 }
 
 template<typename T>
@@ -75,23 +84,79 @@ bool Directory::save(std::ofstream& out) const
 	return true;
 }
 
+void Directory::list() const
+{
+	size_t temp = files.size();
+	std::cout << "FILES:" << std::endl;
+	for (size_t i = 0; i < temp; i++)
+	{
+		std::cout << files[i]->getName() << std::endl;
+	}
+
+	temp = directories.size();
+	std::cout << "DIRECTORIES:" << std::endl;
+	for (size_t i = 0; i < temp; i++)
+	{
+		std::cout << directories[i]->getName() << std::endl;
+	}
+
+	temp = symlinks.size();
+	std::cout << "SYMBOLIC LINKS:" << std::endl;
+	for (size_t i = 0; i < temp; i++)
+	{
+		std::cout << symlinks[i]->getName() << std::endl;
+	}
+}
+
+
 
 template<typename T>
-bool Directory::loadChildFiles(std::vector<T>& fileContainer, std::ifstream& input)
+bool Directory::loadChildFiles(std::vector<T*>& fileContainer, std::ifstream& input)
 {
 	size_t size = 0;
 	input.read(reinterpret_cast<char*>(&size), sizeof(size));
 	fileContainer.resize(size);
-	
+
 	for (size_t i = 0; i < size; i++)
 	{
+		fileContainer[i] = new T();
 		if (fileContainer[i]->load(input) == false)
+		{
+			delete fileContainer[i];
 			return false;
+		}
+	}
+
+	return true;
+}
+
+
+bool Directory::lookUpDirHelper(std::vector<std::string>& arguments,Directory*& result)
+{	
+	if (arguments.size() == 1 && arguments.back() == this->name)
+	{
+		result = this;
+		return true;
+	}
+	
+	size_t dirCnt = directories.size();
+	for (size_t i = 0; i < dirCnt; i++)
+	{
+		if (this->name == arguments.back())
+		{
+			arguments.pop_back();
+			return directories[i]->lookUpDirHelper(arguments, result);
+		}
 	}
 
 	return false;
 }
 
+bool Directory::lookUpDirectory(std::vector<std::string>& arguments, Directory*& result)
+{
+	std::reverse(arguments.begin(), arguments.end());
+	return lookUpDirHelper(arguments, result);
+}
 
 bool Directory::load(std::ifstream& input)
 {

@@ -1,23 +1,32 @@
 #include "Utils.h"
 
-bool Utils::splitStringByDelimiter(const std::string& input, std::vector<std::string>& result, char delim)
-{
-	if (input.length() == 0)
-		return false; // operation failed. This result has to be processed in some other class. Possibly UI class to inform the user of the invalid input
+void Utils::splitUnixFilePath(const std::string& input, std::vector<std::string>& result)
+{   
+    std::string current;
+    size_t length = input.length();
+    for (size_t i = 0; i < length; ++i)
+    {
+        // covers the case for an absolute path
+        if (input[i] == '/' && i == 0)
+            result.push_back("/");
 
-	size_t length = input.length();
-	std::string temp = "";
-	for (size_t i = 0; i < length; i++)
-	{
-		while (input[i] != delim)
-		{
-			temp += input[i];
-		}
-		result.push_back(temp);
-		temp.clear();
-	}
-
-	return true;
+        if (input[i] == '/')
+        {
+            if (!current.empty()) 
+            {
+                result.push_back(current);
+                current.clear();
+            }
+        }
+        else
+        {
+            current += input[i];
+        }
+    }
+    // Add the last component if it exists
+    if (!current.empty()) {
+        result.push_back(current);
+    }
 }
 
 bool Utils::extractFileName(const std::string& filepath, std::string& filename)

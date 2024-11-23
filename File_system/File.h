@@ -9,7 +9,7 @@ public:
 	File(std::ifstream& input, const std::string& destDir);
 
 	// designed to import files external for the file system
-	static bool import(const std::string& filepath, File* file, const std::string& targetDir = "");
+	static bool import(const std::string& filepath, File*& file, const std::string& targetDir = "");
 
 	// I/O functions designed for files that have been serialized from the filesystem in the desired format 
 	bool load(std::ifstream& input);

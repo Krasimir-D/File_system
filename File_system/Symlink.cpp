@@ -1,7 +1,12 @@
 #include "Symlink.h"
 #include <fstream>
 
-Symlink::Symlink(const FileLocationPair& target)
+Symlink::Symlink()
+    : ConcreteFile(Type::Symlink)
+{
+}
+
+Symlink::Symlink(const ConcreteFile::FileLocationPair& target)
     : ConcreteFile(Type::Symlink), target(target)
 {
 }

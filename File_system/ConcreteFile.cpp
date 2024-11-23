@@ -15,6 +15,21 @@ const std::string& ConcreteFile::getName() const
 	return name;
 }
 
+const char* ConcreteFile::getTypeStr() const
+{
+	switch (type)
+	{
+	case ConcreteFile::Type::File:
+		return "File";
+
+	case ConcreteFile::Type::Directory:
+		return "Directory";
+
+	case ConcreteFile::Type::Symlink:
+		return "Symlink";
+	}
+}
+
 unsigned ConcreteFile::getSize() const
 {
 	return size;
@@ -33,6 +48,19 @@ DateTime ConcreteFile::getLastAccessed() const
 DateTime ConcreteFile::getLastModified() const
 {
 	return lastModified;
+}
+
+void ConcreteFile::stat() const
+{
+	std::cout << "Id: " << uniqueId << std::endl;
+	std::cout << "Name: " << name << std::endl;
+	std::cout << "Path: " << path << std::endl;
+	std::cout << "Parent: " << parent.hardAddress << std::endl;
+	std::cout << "Type: " << getTypeStr() << std::endl;
+	std::cout << "Size: " << size << std::endl;
+	std::cout << "Created: " << created.toString() << std::endl;
+	std::cout << "Created: " << lastAccessed.toString() << std::endl;
+	std::cout << "Created: " << lastModified.toString() << std::endl;
 }
 
 
@@ -82,23 +110,36 @@ ConcreteFile::Type ConcreteFile::getType() const
 	return type;
 }
 
+const ConcreteFile* ConcreteFile::getParentRamAddress() const
+{
+	return parent.ramAddress;
+}
+
 ConcreteFile::ConcreteFile(Type type)
 	: uniqueId(ID++), parent(), path(""), name(""), type(type), size(0), created(),
 	lastAccessed(), lastModified()
 {
 }
 
-ConcreteFile::ConcreteFile(const FileLocationPair& parent, Type type, const std::string& fileName, const std::string& directory)
-	: ConcreteFile(type)
+
+
+ConcreteFile::ConcreteFile(const FileLocationPair& parent, Type type, const std::string& path, const std::string& name, const std::string& directory)
+	: uniqueId(ID++), parent(parent), path(path), name(name), type(type), size(), created(), lastAccessed(), lastModified() 
 {
-	this->parent = parent;
+}
+
+ConcreteFile::ConcreteFile(Type type, const std::string& fileName, const std::string& directory)
+	: uniqueId(ID++), type(type), size(0), created(), lastAccessed(), lastModified()
+{
+	this->parent.hardAddress = directory;
 	name = fileName;
+	path = directory + name;
 }
 
 ConcreteFile::ConcreteFile(const ConcreteFile& other)
 	: uniqueId(ID++), type(other.type), created(), lastAccessed(), lastModified()
 {
-	this->parent = other.parent; // shallow copy of the address in memory could be a desired implementation here
+	this->parent = other.parent; // shallow copy of the address in memory is a desired implementation here
 	this->path = other.path;
 	this->name = other.name;
 	this->size = other.size;

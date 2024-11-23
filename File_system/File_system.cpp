@@ -5,6 +5,7 @@
 #include "Directory.h"
 #include "FileSystem.h"
 #include <fstream>
+#include "Utils.h"
 //enum class Type
 //{
 //	NAME, SIZE, CONTENT, CRDATE, MDATE
@@ -25,9 +26,17 @@
 
 int main()
 {
-	FileSystem sys("MySystem");
+	/*FileSystem sys("MySystem");
+	sys.printWorkingDir();
 	sys.importFile("to_imp.txt");
-	
+	std::vector<std::string> dirs;
+	dirs.push_back("Dir1");
+	sys.makeDirectory(dirs);
+	sys.changeDir("/Dir1");
+	sys.printWorkingDir();
+	sys.changeDir("/");
+	sys.printWorkingDir();
+	sys.list();*/
 }
 
 

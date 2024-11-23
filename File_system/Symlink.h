@@ -4,9 +4,10 @@
 class Symlink : public ConcreteFile
 {
 public:
+	Symlink();
 	Symlink(const FileLocationPair& target);
 
-	const FileLocationPair& getTarget() const;
+	const ConcreteFile::FileLocationPair& getTarget() const;
 	//bool isBroken() const;
 
 	bool load(std::ifstream& input);

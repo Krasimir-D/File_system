@@ -17,7 +17,7 @@ File::File(std::ifstream& input, const std::string& destDir)
 	this->path = destDir;
 }
 
-bool File::import(const std::string & filepath, File* file, const std::string& targetDir)
+bool File::import(const std::string & filepath, File*& file, const std::string& targetDir)
 {
 	if (filepath.length() == 0)
 		return false;
@@ -26,14 +26,14 @@ bool File::import(const std::string & filepath, File* file, const std::string& t
 	if (!input.is_open())
 		return false;
 
-	size_t size = input.tellg();
+	unsigned size = input.tellg();
 	input.seekg(0, std::ios::beg);
 	// the input filepath but split into substring by '\' in order to extract the file name
 
 	
 	file = new File;
 	Utils::extractFileName(filepath, file->name);
-	file->path = targetDir;
+	file->path = targetDir+"\\"+file->name;
 	// fix the way parent is being set
 	file->parent.hardAddress = targetDir;
 	file->size = size;
@@ -48,12 +48,11 @@ bool File::import(const std::string & filepath, File* file, const std::string& t
 bool File::load(std::ifstream& input)
 {
 	// copy the metadata
-	if (!ConcreteFile::load(input))
+	if (ConcreteFile::load(input) == false)
 		return false;
 	
 	
 	size_t contentSize = 0;
-	input.seekg(0, std::ios::beg);
 	input.read(reinterpret_cast<char*>(&contentSize), sizeof(contentSize));
 	content.resize(contentSize);
 	input.read(reinterpret_cast<char*>(content.data()), contentSize);

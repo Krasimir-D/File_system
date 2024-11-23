@@ -10,3 +10,16 @@ void DateTime::toString(std::string& str) const
 
 	str += strTime;
 }
+
+std::string DateTime::toString() const
+{
+	std::string result;
+	date.toString(result);
+	result += " ";
+	std::string strTime = "";
+	time.toString(strTime);
+
+	result += strTime;
+
+	return result;
+}

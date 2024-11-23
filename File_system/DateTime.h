@@ -8,6 +8,7 @@ struct DateTime
 	DateTime(Date date, Time time) : date(date), time(time) {}
 
 	void toString(std::string& str) const;
+	std::string toString() const;
 
 	Date date;
 	Time time;

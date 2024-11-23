@@ -4,7 +4,7 @@
 class FileSystem
 {	
 public:
-	FileSystem(const std::string& systemName);
+	FileSystem(const std::string& name);
 	FileSystem(const FileSystem& other);
 	FileSystem& operator=(const FileSystem& other);
 	FileSystem(FileSystem&& other);
@@ -13,8 +13,8 @@ public:
 
 	// commands region. They will be invoked through the UI class via command objects
 	void printWorkingDir() const;
-	void changeDir(const std::string& newDir);
-	void list(const std::string& targetDir);
+	bool changeDir(const std::string& newDir);
+	void list(const std::string& targetDir = "");
 	void concatenate(const std::vector<std::string>& files, const char* destination = nullptr);
 	void copy(std::vector<std::string>& files, const std::string& destDirectory);
 	void remove(const std::vector<std::string>& targetFiles);
@@ -23,10 +23,10 @@ public:
 	bool importFile(const std::string& targetFile, const std::string& targetDir = "");
 	void status(const std::vector<std::string>& targetFiles) const;
 	void locate() const;  // TO_DO: filter logic 
-	void exit() const;
+	void exit();
 
 	// serialize/ deserialize functions
-	bool save(const char* path = nullptr) const;
+	bool save() const;
 	bool load(const std::string& filepath);
 
 private:
