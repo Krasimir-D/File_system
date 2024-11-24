@@ -16,6 +16,27 @@ Directory::Directory(const FileLocationPair& parent, const std::string& path, co
 {
 }
 
+Directory::~Directory()
+{
+	size_t temp = files.size();
+	for (size_t i = 0; i < temp; i++)
+	{
+		delete files[i];
+	};
+
+	temp = directories.size();
+	for (size_t i = 0; i < temp; i++)
+	{
+		delete directories[i];
+	};
+
+	temp = symlinks.size();
+	for (size_t i = 0; i < temp; i++)
+	{
+		delete symlinks[i];
+	};
+}
+
 const std::vector<File*>& Directory::getFiles() const
 {
 	return files;
@@ -38,15 +59,52 @@ ConcreteFile* Directory::copy(const Directory& obj)
 
 void Directory::addFile(File& newFile, const std::string& targetDir)
 {
+	size_t filesCount = files.size();
+	for (size_t i = 0; i < filesCount; i++)
+	{
+		if (newFile.getName() == files[i]->getName())
+			return;
+	}
+
 	newFile.setParentRamAddress(this);
 	files.push_back(&newFile);
 	size += newFile.getSize();
+}
+
+bool Directory::removeFile(const std::string& name)
+{
+	size_t size = files.size();
+	for (size_t i = 0; i < size; i++)
+	{
+		if (files[i]->getName() == name)
+		{
+			delete files[i];
+			files.erase(files.begin() + i);
+			return true;
+		}
+	}
+	return false;
 }
 
 void Directory::addDir(Directory& newDir, const std::string& targetDir)
 {
 	directories.push_back(&newDir);
 	size += newDir.getSize();
+}
+
+bool Directory::removeDir(Directory* target)
+{
+	size_t dirsCnt = directories.size();
+	for (size_t i = 0; i < dirsCnt; i++)
+	{
+		if (directories[i] == target)
+		{
+			delete directories[i];
+			directories.erase(directories.begin() + i);
+			return true;
+		}
+	}
+	return false;
 }
 
 void Directory::addSym(Symlink& newSym, const std::string& targetDir)
@@ -88,6 +146,8 @@ bool Directory::save(std::ofstream& out) const
 void Directory::list() const
 {
 	size_t temp = files.size();
+
+	std::cout << "Directory " << name << " content:" << std::endl;
 	std::cout << "FILES:" << std::endl;
 	for (size_t i = 0; i < temp; i++)
 	{
@@ -107,6 +167,13 @@ void Directory::list() const
 	{
 		std::cout << symlinks[i]->getName() << std::endl;
 	}
+
+	std::cout << std::endl;
+}
+
+bool Directory::isEmpty() const
+{
+	return ( (directories.size() + files.size() + symlinks.size()) == 0);
 }
 
 

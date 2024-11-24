@@ -30,7 +30,7 @@ public:
 	bool load(std::ifstream& input);
 	bool save(std::ofstream& out) const;
 	ConcreteFile::Type getType() const;
-	const ConcreteFile* getParentRamAddress() const;
+	ConcreteFile* getParentRamAddress() const; // the pointer will not be redirected, but the parent object could be manipulated
 	const std::string& getParentHardAddress() const;
 
 	// TO_DO: decide whether parent data-member is public or encapsulated

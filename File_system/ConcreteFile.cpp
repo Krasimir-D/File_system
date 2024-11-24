@@ -111,7 +111,7 @@ ConcreteFile::Type ConcreteFile::getType() const
 	return type;
 }
 
-const ConcreteFile* ConcreteFile::getParentRamAddress() const
+ConcreteFile* ConcreteFile::getParentRamAddress() const
 {
 	return parent.ramAddress;
 }

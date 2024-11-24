@@ -29,6 +29,19 @@ void Utils::splitUnixFilePath(const std::string& input, std::vector<std::string>
     }
 }
 
+void Utils::splitDirAndName(const std::string& filePath, std::string& dir, std::string& name)
+{
+    std::vector<std::string> args;
+    splitUnixFilePath(filePath, args);
+    size_t size = args.size();
+    name = args[size - 1];
+
+    for (size_t i = 0; i < size - 1; i++)
+    {
+        dir += args[i];
+    }
+}
+
 bool Utils::extractFileName(const std::string& filepath, std::string& filename)
 {
 	if (filepath.length() == 0)

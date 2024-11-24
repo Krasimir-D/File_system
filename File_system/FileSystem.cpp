@@ -36,6 +36,16 @@ bool FileSystem::load(const std::string& filepath)
 	return true;
 }
 
+void FileSystem::remove(const std::vector<std::string>& targetFiles)
+{
+	size_t filesCount = targetFiles.size();
+	for (size_t i = 0; i < filesCount; i++)
+	{
+		if (removeFile(targetFiles[i]) == false)
+			std::cout << "Could not find and remove file: " << targetFiles[i] << std::endl;
+	}
+}
+
 void FileSystem::makeDirectory(const std::vector<std::string>& directories)
 {
 	if (directories.size() == 0)
@@ -52,6 +62,39 @@ void FileSystem::makeDirectory(const std::vector<std::string>& directories)
 	}
 }
 
+void FileSystem::removeDirectory(const std::vector<std::string>& targetDirectories)
+{
+	size_t targetsCount = targetDirectories.size();
+	for (size_t i = 0; i < targetsCount; i++)
+	{
+		Directory* temp = nullptr;
+		if (findDirectory(targetDirectories[i], temp) == false)
+		{
+			std::cout << "Such directory does not exist!: " << targetDirectories[i] << std::endl;
+			continue;
+		}
+
+		if (temp == root)
+		{
+			std::cout << "The root of the file system will not be removed!" << std::endl;
+			continue;
+		}
+
+		if (!temp->isEmpty())
+		{
+			std::cout << "Directory is not empty, therefore it will not be removed!: " << targetDirectories[i] << std::endl;
+			continue;
+		}		
+
+		Directory* tempParent = reinterpret_cast<Directory*>(temp->getParentRamAddress());
+
+		if (temp == toggledDir)
+			toggledDir = root; // the default behaviour I desire
+
+		tempParent->removeDir(temp);		
+	}
+}
+
 bool FileSystem::importFile(const std::string& targetFile, const std::string& targetDir)
 {
 	Directory* temp = nullptr;
@@ -59,7 +102,7 @@ bool FileSystem::importFile(const std::string& targetFile, const std::string& ta
 		temp = toggledDir;
 	
 	else
-		changeDirectory(targetDir, temp);
+		findDirectory(targetDir, temp);
 
 	File* file = nullptr;
 	if (File::import(targetFile, file, temp->getName()) == false)
@@ -112,13 +155,59 @@ FileSystem::~FileSystem()
 
 void FileSystem::printWorkingDir() const
 {
-	std::cout << toggledDir->getPath() << std::endl;
+	std::cout << "Working Directory: " << toggledDir->getPath() << std::endl;
 }
 
-bool FileSystem::changeDirectory(const std::string& newDir, Directory*& result)
+bool FileSystem::removeFile(const std::string& path)
 {
 	std::vector<std::string> arguments;
-	Utils::splitUnixFilePath(newDir, arguments);
+	std::string targetName, targetDir;
+	Utils::splitDirAndName(path, targetDir, targetName);
+	Directory* temp = nullptr;
+	if (findDirectory(targetDir, temp) == false)
+		return false;
+
+	return temp->removeFile(targetName); // if it returns true-> the file was found and removed
+}
+
+bool FileSystem::findFile(const std::string& path, File* target)
+{
+	std::vector<std::string> arguments;
+	Utils::splitUnixFilePath(path, arguments);
+	size_t tempCnt = arguments.size();
+	std::string fileName = arguments[tempCnt - 1];
+	std::string directory = "";
+	for (size_t i = 0; i < tempCnt; i++)
+	{
+		directory += arguments[i];
+	}
+	
+	Directory* targetDir = nullptr;
+	if (findDirectory(directory, targetDir) == false)
+		return false;
+
+	tempCnt = targetDir->getFiles().size();
+	for (size_t i = 0; i < tempCnt; i++)
+	{
+		if (targetDir->getFiles()[i]->getName() == fileName)
+		{
+			target = targetDir->getFiles()[i];
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool FileSystem::findDirectory(const std::string& targetDir, Directory*& result)
+{
+	if (targetDir.length() == 0)
+	{
+		result = toggledDir;
+		return true;
+	}
+	std::vector<std::string> arguments;
+	Utils::splitUnixFilePath(targetDir, arguments);
 	// absolute path logic-> start from root
 	if (arguments[0] == "/")
 		return root->lookUpDirectory(arguments, result);
@@ -132,7 +221,7 @@ bool FileSystem::changeWorkingDir(const std::string& newDir)
 	if (newDir.length() == 0)
 		return true;
 
-	return changeDirectory(newDir, toggledDir);
+	return findDirectory(newDir, toggledDir);
 }
 
 void FileSystem::list(const std::string& targetDir)
@@ -145,7 +234,7 @@ void FileSystem::list(const std::string& targetDir)
 	}
 
 	Directory* temp = toggledDir;
-	changeDirectory(targetDir, temp); // if it successful then temp points to the desired directory
+	findDirectory(targetDir, temp); // if it successful then temp points to the desired directory
 									// if it has failed then temp is the current working directory
 
 	temp->list();

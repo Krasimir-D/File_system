@@ -30,7 +30,9 @@ public:
 	bool load(const std::string& filepath);
 
 private:
-	bool changeDirectory(const std::string& newDir, Directory*& result);
+	bool removeFile(const std::string& path);
+	bool findFile(const std::string& path, File* target);
+	bool findDirectory(const std::string& newDir, Directory*& result);
 
 private:
 	std::string systemName;

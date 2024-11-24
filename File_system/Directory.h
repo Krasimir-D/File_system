@@ -9,6 +9,7 @@ public:
 	Directory();
 	Directory(const std::string& filename);
 	Directory(const FileLocationPair& parent, const std::string& path, const std::string& name); 
+	~Directory();
 
 	const std::vector<File*>& getFiles() const;
 	const std::vector<Symlink*>& getSymlinks() const;
@@ -18,7 +19,11 @@ public:
 
 	// imports a file
 	void addFile(File& newFile, const std::string& targetDir = "");
+	bool removeFile(const std::string& name);
+
 	void addDir(Directory& newDir, const std::string& targetDir = "");
+	bool removeDir(Directory* target);
+
 	void addSym(Symlink& newSym, const std::string& targetDir = "");
 	void remove(const ConcreteFile* file);
 	
@@ -29,6 +34,7 @@ public:
 	bool load(std::ifstream& input);
 	bool save(std::ofstream& out) const;
 	void list() const;
+	bool isEmpty() const;
 
 private:
 	// helper for the lookUpDirectory
