@@ -26,17 +26,20 @@
 
 int main()
 {
-	/*FileSystem sys("MySystem");
+	FileSystem sys("MySystem");
 	sys.printWorkingDir();
-	sys.importFile("to_imp.txt");
-	std::vector<std::string> dirs;
-	dirs.push_back("Dir1");
-	sys.makeDirectory(dirs);
-	sys.changeDir("/Dir1");
+	//sys.importFile("to_imp.txt");
+	//std::vector<std::string> dirs;
+	//dirs.push_back("Dir1");
+	//sys.makeDirectory(dirs);
+	sys.changeWorkingDir("/Dir1");
 	sys.printWorkingDir();
-	sys.changeDir("/");
+	//sys.importFile("deep.txt");
+	sys.changeWorkingDir("..");
 	sys.printWorkingDir();
-	sys.list();*/
+	sys.list();
+	sys.changeWorkingDir("Dir1");
+	sys.list();
 }
 
 

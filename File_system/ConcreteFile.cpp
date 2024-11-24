@@ -70,6 +70,7 @@ bool ConcreteFile::load(std::ifstream& input)
 		return false;
 
 	input.read(reinterpret_cast<char*>(&uniqueId), sizeof(uniqueId));
+	ID = uniqueId;
 
 	loadStrFromBinFile(input, parent.hardAddress); // reading the path to the parent file
 	loadStrFromBinFile(input, path); // reading the path	
@@ -113,6 +114,19 @@ ConcreteFile::Type ConcreteFile::getType() const
 const ConcreteFile* ConcreteFile::getParentRamAddress() const
 {
 	return parent.ramAddress;
+}
+
+const std::string& ConcreteFile::getParentHardAddress() const
+{
+	return parent.hardAddress;
+}
+
+void ConcreteFile::setParentRamAddress(ConcreteFile* parent)
+{
+	if (parent == nullptr)
+		return;
+
+	this->parent.ramAddress = parent;
 }
 
 ConcreteFile::ConcreteFile(Type type)

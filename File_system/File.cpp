@@ -33,7 +33,7 @@ bool File::import(const std::string & filepath, File*& file, const std::string& 
 	
 	file = new File;
 	Utils::extractFileName(filepath, file->name);
-	file->path = targetDir+"\\"+file->name;
+	file->path = targetDir + file->name;
 	// fix the way parent is being set
 	file->parent.hardAddress = targetDir;
 	file->size = size;

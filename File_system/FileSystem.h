@@ -13,7 +13,7 @@ public:
 
 	// commands region. They will be invoked through the UI class via command objects
 	void printWorkingDir() const;
-	bool changeDir(const std::string& newDir);
+	bool changeWorkingDir(const std::string& newDir); // false if it fails to find the specified dir
 	void list(const std::string& targetDir = "");
 	void concatenate(const std::vector<std::string>& files, const char* destination = nullptr);
 	void copy(std::vector<std::string>& files, const std::string& destDirectory);
@@ -30,7 +30,7 @@ public:
 	bool load(const std::string& filepath);
 
 private:
-	// file lookup func
+	bool changeDirectory(const std::string& newDir, Directory*& result);
 
 private:
 	std::string systemName;

@@ -43,7 +43,7 @@ void FileSystem::makeDirectory(const std::vector<std::string>& directories)
 
 	size_t dirCnt = directories.size();
 	Directory* current = nullptr;
-	ConcreteFile::FileLocationPair parent(reinterpret_cast<const ConcreteFile*>(toggledDir), toggledDir->getName());
+	ConcreteFile::FileLocationPair parent(reinterpret_cast<ConcreteFile*>(toggledDir), toggledDir->getName());
 	for (size_t i = 0; i < dirCnt; i++)
 	{
 		std::string currentPath = toggledDir->getPath() + directories[i];
@@ -54,13 +54,18 @@ void FileSystem::makeDirectory(const std::vector<std::string>& directories)
 
 bool FileSystem::importFile(const std::string& targetFile, const std::string& targetDir)
 {
-	// TO_DO: if targetDir = "", targetDir = toggledDir 
-	File* file = nullptr;
+	Directory* temp = nullptr;
+	if (targetDir.length() == 0)
+		temp = toggledDir;
+	
+	else
+		changeDirectory(targetDir, temp);
 
-	if (File::import(targetFile, file) == false)
+	File* file = nullptr;
+	if (File::import(targetFile, file, temp->getName()) == false)
 		return false;
 
-	root->addFile(*file);
+	temp->addFile(*file);
 
 	return true;
 }
@@ -73,7 +78,7 @@ void FileSystem::status(const std::vector<std::string>& targetFiles) const
 	size_t count = targetFiles.size();
 	for (size_t i = 0; i < count; i++)
 	{
-
+		// lookup files in directories and print metadata
 	}
 }
 
@@ -110,18 +115,24 @@ void FileSystem::printWorkingDir() const
 	std::cout << toggledDir->getPath() << std::endl;
 }
 
-bool FileSystem::changeDir(const std::string& newDir)
+bool FileSystem::changeDirectory(const std::string& newDir, Directory*& result)
+{
+	std::vector<std::string> arguments;
+	Utils::splitUnixFilePath(newDir, arguments);
+	// absolute path logic-> start from root
+	if (arguments[0] == "/")
+		return root->lookUpDirectory(arguments, result);
+
+	// else start search within the current working directory
+	return toggledDir->lookUpDirectory(arguments, result);
+}
+
+bool FileSystem::changeWorkingDir(const std::string& newDir)
 {
 	if (newDir.length() == 0)
 		return true;
 
-	std::vector<std::string> arguments;
-	Utils::splitUnixFilePath(newDir, arguments);
-	// absolute path logic
-	if (arguments[0] == "/")
-		return root->lookUpDirectory(arguments, toggledDir);
-
-	// relative path logic	
+	return changeDirectory(newDir, toggledDir);
 }
 
 void FileSystem::list(const std::string& targetDir)
@@ -133,22 +144,9 @@ void FileSystem::list(const std::string& targetDir)
 		return;
 	}
 
-	// try to lookup by full path
-	std::vector<std::string> arguments;
-	Utils::splitUnixFilePath(targetDir, arguments);
-	Directory* temp = root;
-	if (arguments[0] == "/")
-	{
-		// print current folder
-		if (root->lookUpDirectory(arguments, temp) == false)
-			toggledDir->list();
-		
-		// print temp
-		else
-			temp->list(); 
+	Directory* temp = toggledDir;
+	changeDirectory(targetDir, temp); // if it successful then temp points to the desired directory
+									// if it has failed then temp is the current working directory
 
-		return;
-	}
-
-	// try to lookup by relative path
+	temp->list();
 }

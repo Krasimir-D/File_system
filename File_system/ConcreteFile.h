@@ -31,6 +31,11 @@ public:
 	bool save(std::ofstream& out) const;
 	ConcreteFile::Type getType() const;
 	const ConcreteFile* getParentRamAddress() const;
+	const std::string& getParentHardAddress() const;
+
+	// TO_DO: decide whether parent data-member is public or encapsulated
+	// not being a ptr to a constant object is the desired behaviour here
+	void setParentRamAddress(ConcreteFile* parent);
 
 public:
 	~ConcreteFile() = default;
@@ -39,10 +44,10 @@ public:
 	struct FileLocationPair
 	{
 		FileLocationPair() = default;
-		FileLocationPair(const ConcreteFile* ramAdd, const std::string& hardAdd)
+		FileLocationPair(ConcreteFile* ramAdd, const std::string& hardAdd)
 			: ramAddress(ramAdd), hardAddress(hardAdd) {}
 
-		const ConcreteFile* ramAddress;
+		ConcreteFile* ramAddress;
 		std::string hardAddress;
 	};
 
@@ -63,8 +68,8 @@ protected:
 
 	// Class fields region
 protected:
-	static unsigned ID;
 	FileLocationPair parent;
+	static unsigned ID;
 
 	std::string path;
 	std::string name;

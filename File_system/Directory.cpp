@@ -38,6 +38,7 @@ ConcreteFile* Directory::copy(const Directory& obj)
 
 void Directory::addFile(File& newFile, const std::string& targetDir)
 {
+	newFile.setParentRamAddress(this);
 	files.push_back(&newFile);
 	size += newFile.getSize();
 }
@@ -63,15 +64,15 @@ bool Directory::saveChildFiles(const std::vector<T*>& fileContainer, std::ofstre
 	for (size_t i = 0; i < size; i++) // then write the vector content
 	{
 		if (fileContainer[i]->save(out) == false) // if some of the save opeartions fail the whole function fails
-		return false;
+			return false;
 	}
-	
+
 	return true;
 }
 
 
 bool Directory::save(std::ofstream& out) const
-{	
+{
 	if (ConcreteFile::save(out) == false) // the validation whether the stream is open is done in this method
 		return false;
 
@@ -125,26 +126,49 @@ bool Directory::loadChildFiles(std::vector<T*>& fileContainer, std::ifstream& in
 			delete fileContainer[i];
 			return false;
 		}
+		fileContainer[i]->setParentRamAddress(this);
 	}
 
 	return true;
 }
 
 
-bool Directory::lookUpDirHelper(std::vector<std::string>& arguments,Directory*& result)
+bool Directory::lookUpDirHelper(std::vector<std::string>& arguments, Directory*& result) 
 {	
-	if (arguments.size() == 1 && arguments.back() == this->name)
+	// if a directory is looked up by an absolute path this block will be entered due to the first predicate
+	// if a directory is looked up by a relative path the block will be entered due to the second predicate
+	if ( (arguments.size() == 1 && arguments.back() == this->name) || arguments.size() == 0)
 	{
 		result = this;
 		return true;
 	}
+
+	if (arguments.back() == ".")
+	{
+		arguments.pop_back();
+		return this->lookUpDirHelper(arguments, result);
+	}
 	
+	if (arguments.back() == ".." && this->parent.ramAddress != nullptr)
+	{
+		arguments.pop_back();
+		Directory* parentDir = reinterpret_cast<Directory*>(parent.ramAddress);
+		return parentDir->lookUpDirHelper(arguments, result);
+	}
+
 	size_t dirCnt = directories.size();
 	for (size_t i = 0; i < dirCnt; i++)
 	{
+		// this if covers search by absolute path
 		if (this->name == arguments.back())
 		{
 			arguments.pop_back();
+			return directories[i]->lookUpDirHelper(arguments, result);
+		}
+
+		// this case covers the search by relative path
+		else if (directories[i]->name == arguments.back())
+		{			
 			return directories[i]->lookUpDirHelper(arguments, result);
 		}
 	}
@@ -152,7 +176,7 @@ bool Directory::lookUpDirHelper(std::vector<std::string>& arguments,Directory*& 
 	return false;
 }
 
-bool Directory::lookUpDirectory(std::vector<std::string>& arguments, Directory*& result)
+bool Directory::lookUpDirectory(std::vector<std::string>& arguments, Directory*& result) 
 {
 	std::reverse(arguments.begin(), arguments.end());
 	return lookUpDirHelper(arguments, result);
@@ -162,7 +186,7 @@ bool Directory::load(std::ifstream& input)
 {
 	if (ConcreteFile::load(input) == false) // the validation whether the stream is open is done in this method
 		return false;
-		
+
 	if (loadChildFiles(directories, input) == false)
 		return false;
 
