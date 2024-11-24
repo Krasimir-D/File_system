@@ -14,4 +14,12 @@ namespace Utils
 	// extracts the file name from a specified path
 	// works for unix paths that dont end with '/'
 	bool extractFileName(const std::string& filepath, std::string& filename);
+
+	std::string stringToLower(const std::string& string);
+
+	std::string removeExtraWhitespaces(const std::string& string);
+
+	void removeEmptyArguments(std::vector<std::string>& arguments);
+
+	std::vector<std::string> parseCommandLine(const std::string& string);
 }

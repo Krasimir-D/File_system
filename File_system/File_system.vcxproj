@@ -127,7 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommandCreators.cpp" />
     <ClCompile Include="Commands.cpp" />
+    <ClCompile Include="CommandsFactory.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="Directory.cpp" />
@@ -137,10 +139,13 @@
     <ClCompile Include="File_system.cpp" />
     <ClCompile Include="Symlink.cpp" />
     <ClCompile Include="Time.cpp" />
+    <ClCompile Include="UserInterface.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandCreators.h" />
     <ClInclude Include="Commands.h" />
+    <ClInclude Include="CommandsFactory.h" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="Directory.h" />
@@ -149,6 +154,7 @@
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Symlink.h" />
     <ClInclude Include="Time.h" />
+    <ClInclude Include="UserInterface.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

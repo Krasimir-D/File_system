@@ -59,4 +59,95 @@ bool Utils::extractFileName(const std::string& filepath, std::string& filename)
 	return true;
 }
 
+std::string Utils::stringToLower(const std::string& string)
+{
+    size_t length = string.length();
+    std::string result = string;
+    for (size_t i = 0; i < length; i++)
+    {
+        if (result[i] > 64 && result[i] < 91)
+            result[i] += 32;
+    }
+    return result;
+}
+
+std::string Utils::removeExtraWhitespaces(const std::string& string)
+{
+    size_t length = string.length();
+    std::string result = "";
+    bool isPrevWhitespace = false;
+
+    for (size_t i = 0; i < length; i++)
+    {
+        if (string[i] != ' ' && isPrevWhitespace)
+        {
+            result.push_back(string[i]);
+            isPrevWhitespace = false;
+            continue;
+        }
+
+        if (string[i] == ' ' && isPrevWhitespace)
+            continue;
+
+        if (string[i] == ' ' && !isPrevWhitespace)
+        {
+            result.push_back(string[i]);
+            isPrevWhitespace = true;
+            continue;
+        }
+
+        if (string[i] == ' ' && i == length - 1)
+            break;
+
+        result.push_back(string[i]);
+    }
+
+    return result;
+}
+
+void Utils::removeEmptyArguments(std::vector<std::string>& arguments)
+{
+    size_t size = arguments.size();
+    for (size_t i = 0; i < size; i++)
+    {
+        if (arguments[i] == "")
+        {
+            arguments.erase(arguments.begin() + i);
+            i--;
+        }
+    }
+}
+
+std::vector<std::string> Utils::parseCommandLine(const std::string& string)
+{
+    std::string result = Utils::removeExtraWhitespaces(string);
+    std::string currentWord;
+    size_t length = result.length();
+    std::vector<std::string> arguments;
+
+    for (size_t i = 0; i < length; i++)
+    {
+        if (result[i] == ' ')
+        {
+            arguments.push_back(currentWord);
+            currentWord = "";
+            continue;
+        }
+
+        if (result[i] != ' ' && i == length)
+        {
+            currentWord.push_back(result[i]);
+            arguments.push_back(currentWord);
+            currentWord = "";
+        }
+
+        else
+            currentWord.push_back(result[i]);
+    }
+    arguments.push_back(currentWord);
+    removeEmptyArguments(arguments);
+
+    return arguments;
+}
+
 

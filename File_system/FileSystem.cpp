@@ -36,6 +36,10 @@ bool FileSystem::load(const std::string& filepath)
 	return true;
 }
 
+void FileSystem::copy(std::vector<std::string>& files, const std::string& destDirectory)
+{
+}
+
 void FileSystem::remove(const std::vector<std::string>& targetFiles)
 {
 	size_t filesCount = targetFiles.size();
@@ -125,6 +129,10 @@ void FileSystem::status(const std::vector<std::string>& targetFiles) const
 	}
 }
 
+void FileSystem::locate() const
+{
+}
+
 void FileSystem::exit()
 {
 	this->isActive = false;
@@ -151,6 +159,11 @@ FileSystem::~FileSystem()
 	save();
 	delete root;
 	toggledDir = nullptr;
+}
+
+FileSystem::operator bool() const
+{
+	return isActive;
 }
 
 void FileSystem::printWorkingDir() const
@@ -238,4 +251,8 @@ void FileSystem::list(const std::string& targetDir)
 									// if it has failed then temp is the current working directory
 
 	temp->list();
+}
+
+void FileSystem::concatenate(const std::vector<std::string>& files, const char* destination)
+{
 }

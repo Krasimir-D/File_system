@@ -1,3 +1,4 @@
+#include "Directory.h"
 #include "Commands.h"
 
 Command::Command(const std::string& name)
@@ -10,7 +11,7 @@ void Command::operator()(FileSystem* sys)
 	execute(sys);
 }
 
-const std::string& Command::getName() const
+const std::string& Command::getType() const
 {
 	return name;
 }
@@ -27,7 +28,7 @@ PrintWorkingDir* PrintWorkingDir::clone() const
 
 void PrintWorkingDir::execute(FileSystem* sys) const
 {
-
+	sys->printWorkingDir();
 }
 
 ChangeDir::ChangeDir(const std::string& newDir)
@@ -41,8 +42,13 @@ ChangeDir* ChangeDir::clone() const
 	return new ChangeDir(*this);
 }
 
-#include "Directory.h"
 void ChangeDir::execute(FileSystem* sys) const
+{
+	sys->changeWorkingDir(newDir);
+}
+
+List::List(const std::string& targetDir)
+	: Command(LS_COMMAND), targerDir(targetDir)
 {
 }
 
@@ -53,6 +59,12 @@ List* List::clone() const
 
 void List::execute(FileSystem* sys) const
 {
+	sys->list(targerDir);
+}
+
+Concatenate::Concatenate(const std::vector<std::string>& files, const char* destination)
+	: Command(CAT_COMMAND), files(files), destinationFile(destination)
+{
 }
 
 Concatenate* Concatenate::clone() const
@@ -61,6 +73,12 @@ Concatenate* Concatenate::clone() const
 }
 
 void Concatenate::execute(FileSystem* sys) const
+{
+	sys->concatenate(files, destinationFile.c_str());
+}
+
+Copy::Copy(std::vector<std::string>& files, const std::string& destDirectory)
+	: Command(CP_COMMAND), files(files), destDirectory(destDirectory)
 {
 }
 
@@ -71,6 +89,12 @@ Copy* Copy::clone() const
 
 void Copy::execute(FileSystem* sys) const
 {
+	sys->copy(files, destDirectory);
+}
+
+Remove::Remove(const std::vector<std::string>& targetFiles)
+	: Command(RM_COMMAND), targetFiles(targetFiles)
+{
 }
 
 Remove* Remove::clone() const
@@ -79,6 +103,12 @@ Remove* Remove::clone() const
 }
 
 void Remove::execute(FileSystem* sys) const
+{
+	sys->remove(targetFiles);
+}
+
+MakeDirectory::MakeDirectory(const std::vector<std::string>& directories)
+	: Command(MKDIR_COMMAND), directories(directories)
 {
 }
 
@@ -89,6 +119,12 @@ MakeDirectory* MakeDirectory::clone() const
 
 void MakeDirectory::execute(FileSystem* sys) const
 {
+	sys->makeDirectory(directories);
+}
+
+RemoveDirectory::RemoveDirectory(const std::vector<std::string>& targetDirectories)
+	: Command(RMDIR_COMMAND), targetDirectories(targetDirectories)
+{
 }
 
 RemoveDirectory* RemoveDirectory::clone() const
@@ -97,6 +133,12 @@ RemoveDirectory* RemoveDirectory::clone() const
 }
 
 void RemoveDirectory::execute(FileSystem* sys) const
+{
+	sys->removeDirectory(targetDirectories);
+}
+
+Import::Import(const std::string& targetFile, const char* destinationDir)
+	: Command(IMPORT_COMMAND), targetFile(targetFile), destinationDir(destinationDir)
 {
 }
 
@@ -107,6 +149,12 @@ Import* Import::clone() const
 
 void Import::execute(FileSystem* sys) const
 {
+	sys->importFile(targetFile, destinationDir);
+}
+
+Status::Status(const std::vector<std::string>& targetFiles)
+	: Command(STAT_COMMAND), targetFiles(targetFiles)
+{
 }
 
 Status* Status::clone() const
@@ -115,6 +163,12 @@ Status* Status::clone() const
 }
 
 void Status::execute(FileSystem* sys) const
+{
+	sys->status(targetFiles);
+}
+
+Exit::Exit()
+	: Command(EXIT_COMMAND)
 {
 }
 
@@ -125,4 +179,5 @@ Exit* Exit::clone() const
 
 void Exit::execute(FileSystem* sys) const
 {
+	sys->exit();
 }

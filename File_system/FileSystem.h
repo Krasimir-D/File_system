@@ -11,12 +11,15 @@ public:
 	FileSystem& operator=(FileSystem&& other);
 	~FileSystem();
 
+	// if the "isActive" flag is set to true then return true
+	operator bool() const;
+
 	// commands region. They will be invoked through the UI class via command objects
 	void printWorkingDir() const;
 	bool changeWorkingDir(const std::string& newDir); // false if it fails to find the specified dir
 	void list(const std::string& targetDir = "");
-	void concatenate(const std::vector<std::string>& files, const char* destination = nullptr);
-	void copy(std::vector<std::string>& files, const std::string& destDirectory);
+	void concatenate(const std::vector<std::string>& files, const char* destination = nullptr); // to do
+	void copy(std::vector<std::string>& files, const std::string& destDirectory); // to do
 	void remove(const std::vector<std::string>& targetFiles);
 	void makeDirectory(const std::vector<std::string>& directories);
 	void removeDirectory(const std::vector<std::string>& targetDirectories);

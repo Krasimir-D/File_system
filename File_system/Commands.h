@@ -8,14 +8,14 @@ public:
 	virtual ~Command() = default;
 
 	virtual Command* clone() const = 0;
-	void operator()(FileSystem* sys = nullptr);
-	const std::string& getName() const;
+	void operator()(FileSystem* sys);
+	const std::string& getType() const;
 
 protected:
 	const std::string name;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const = 0;
+	virtual void execute(FileSystem* sys) const = 0;
 };
 
 // pwd command - lists the path to the working directory
@@ -27,7 +27,7 @@ public:
 	virtual PrintWorkingDir* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const;
+	virtual void execute(FileSystem* sys) const;
 
 private:
 	static constexpr char PWD_COMMAND[]  = "pwd";
@@ -41,7 +41,7 @@ public:
 	virtual ChangeDir* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	std::string newDir;
@@ -56,7 +56,7 @@ public:
 	virtual List* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	std::string targerDir;
@@ -72,7 +72,7 @@ public:
 	virtual Concatenate* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	std::vector<std::string> files;
@@ -88,11 +88,11 @@ public:
 	virtual Copy* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	std::vector<std::string>& files;
-	std::string& destDirectory;
+	std::string destDirectory;
 	static constexpr char CP_COMMAND[] = "cp";
 };
 
@@ -104,7 +104,7 @@ public:
 	virtual Remove* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	std::vector<std::string> targetFiles;
@@ -119,7 +119,7 @@ public:
 	virtual MakeDirectory* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	std::vector<std::string> directories;
@@ -136,7 +136,7 @@ public:
 	virtual RemoveDirectory* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	std::vector<std::string> targetDirectories;
@@ -151,7 +151,7 @@ public:
 	virtual Import* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 private:
 	std::string targetFile;
 	std::string destinationDir;
@@ -166,7 +166,7 @@ public:
 	virtual Status* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	std::vector<std::string> targetFiles;
@@ -190,7 +190,7 @@ public:
 	virtual Exit* clone() const override;
 
 private:
-	virtual void execute(FileSystem* sys = nullptr) const override;
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	static constexpr char EXIT_COMMAND[] = "exit";
