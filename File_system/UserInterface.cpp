@@ -18,9 +18,8 @@ void UserInterface::run()
 		std::string commandLine;
 		std::getline(std::cin, commandLine);
 		std::vector<std::string> arguments = Utils::parseCommandLine(commandLine);
-		Command cmd = CommandsFactory::getFactory().createCommand(arguments);
+		Command* cmd = CommandsFactory::getFactory().createCommand(arguments);
 
-		cmd(fileSystem);
 	}
 }
 
