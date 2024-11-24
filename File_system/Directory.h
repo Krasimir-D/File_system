@@ -25,7 +25,7 @@ public:
 	bool removeDir(Directory* target);
 
 	void addSym(Symlink& newSym, const std::string& targetDir = "");
-	void remove(const ConcreteFile* file);
+	/*void remove(const ConcreteFile* file);*/
 	
 	// searches for a subdirectory recursively. If a match is found the result pointer is redirected to the desired directory
 	// the vector is used as a stack, being traversed from right to left

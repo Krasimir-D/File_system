@@ -30,14 +30,35 @@ bool FileSystem::load(const std::string& filepath)
 		return false;
 
 	toggledDir = root;
+	root->refreshLastAccessed();
 	isActive = true;
 
 	input.close();
 	return true;
 }
 
-void FileSystem::copy(std::vector<std::string>& files, const std::string& destDirectory)
+void FileSystem::copy(const std::vector<std::string>& files, const std::string& destDirectory)
 {
+	Directory* targetDir = nullptr;
+	if (findDirectory(destDirectory, targetDir) == false)
+	{
+		std::cout << "Could not find directory " << destDirectory << std::endl;
+		return;
+	}
+
+	size_t filesCount = files.size();
+	File* tempShallow = nullptr;
+	File* tempDeep = nullptr;
+	for (size_t i = 0; i < filesCount; i++)
+	{
+		if (findFile(files[i], tempShallow) == false) // this function retrieves a pointer to the original file
+		{
+			std::cout << "File " << files[i] << " not found" << std::endl;
+			continue;
+		}
+		tempDeep = reinterpret_cast<File*>(File::copy(*tempShallow)); // making a deep copy of the object
+		targetDir->addFile(*tempDeep);
+	}
 }
 
 void FileSystem::remove(const std::vector<std::string>& targetFiles)
@@ -123,9 +144,16 @@ void FileSystem::status(const std::vector<std::string>& targetFiles) const
 		return;
 
 	size_t count = targetFiles.size();
+	File* target = nullptr;
 	for (size_t i = 0; i < count; i++)
 	{
-		// lookup files in directories and print metadata
+		if (findFile(targetFiles[i], target) == false)
+		{
+			std::cout << "File " << targetFiles[i] << " not found" << std::endl;
+			continue;
+		}
+		target->stat();
+		std::cout << std::endl;
 	}
 }
 
@@ -169,6 +197,7 @@ FileSystem::operator bool() const
 void FileSystem::printWorkingDir() const
 {
 	std::cout << "Working Directory: " << toggledDir->getPath() << std::endl;
+	toggledDir->refreshLastAccessed();
 }
 
 bool FileSystem::removeFile(const std::string& path)
@@ -183,14 +212,14 @@ bool FileSystem::removeFile(const std::string& path)
 	return temp->removeFile(targetName); // if it returns true-> the file was found and removed
 }
 
-bool FileSystem::findFile(const std::string& path, File* target)
+bool FileSystem::findFile(const std::string& path, File*& target) const
 {
 	std::vector<std::string> arguments;
 	Utils::splitUnixFilePath(path, arguments);
 	size_t tempCnt = arguments.size();
 	std::string fileName = arguments[tempCnt - 1];
 	std::string directory = "";
-	for (size_t i = 0; i < tempCnt; i++)
+	for (size_t i = 0; i < tempCnt - 1; i++)
 	{
 		directory += arguments[i];
 	}
@@ -212,7 +241,7 @@ bool FileSystem::findFile(const std::string& path, File* target)
 	return false;
 }
 
-bool FileSystem::findDirectory(const std::string& targetDir, Directory*& result)
+bool FileSystem::findDirectory(const std::string& targetDir, Directory*& result) const
 {
 	if (targetDir.length() == 0)
 	{
@@ -243,6 +272,7 @@ void FileSystem::list(const std::string& targetDir)
 	if (targetDir.length() == 0)
 	{
 		toggledDir->list();
+		toggledDir->refreshLastAccessed();
 		return;
 	}
 
@@ -251,6 +281,7 @@ void FileSystem::list(const std::string& targetDir)
 									// if it has failed then temp is the current working directory
 
 	temp->list();
+	temp->refreshLastAccessed();
 }
 
 void FileSystem::concatenate(const std::vector<std::string>& files, const char* destination)

@@ -25,6 +25,9 @@ public:
 	DateTime getLastAccessed() const;
 	DateTime getLastModified() const;
 
+	void refreshLastAccessed() const;
+	void refreshLastModified();
+
 	void stat() const;
 
 	bool load(std::ifstream& input);
@@ -78,7 +81,7 @@ protected:
 	// metadata
 	unsigned size;  // not entirely sure whether each file type should have this metadata. 
 	DateTime created;
-	DateTime lastAccessed;
+	mutable DateTime lastAccessed;
 	DateTime lastModified;
 
 private:

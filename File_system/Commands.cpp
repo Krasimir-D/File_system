@@ -32,9 +32,8 @@ void PrintWorkingDir::execute(FileSystem* sys) const
 }
 
 ChangeDir::ChangeDir(const std::string& newDir)
-	: Command(CD_COMMAND), newDir{}
+	: Command(CD_COMMAND), newDir(newDir)
 {
-	// write validation logic
 }
 
 ChangeDir* ChangeDir::clone() const
@@ -44,7 +43,8 @@ ChangeDir* ChangeDir::clone() const
 
 void ChangeDir::execute(FileSystem* sys) const
 {
-	sys->changeWorkingDir(newDir);
+	if (sys->changeWorkingDir(newDir) == false)
+		std::cout << "Could not find such directory " << newDir << std::endl;
 }
 
 List::List(const std::string& targetDir)
@@ -77,7 +77,7 @@ void Concatenate::execute(FileSystem* sys) const
 	sys->concatenate(files, destinationFile.c_str());
 }
 
-Copy::Copy(std::vector<std::string>& files, const std::string& destDirectory)
+Copy::Copy(const std::vector<std::string>& files, const std::string& destDirectory)
 	: Command(CP_COMMAND), files(files), destDirectory(destDirectory)
 {
 }
@@ -137,7 +137,7 @@ void RemoveDirectory::execute(FileSystem* sys) const
 	sys->removeDirectory(targetDirectories);
 }
 
-Import::Import(const std::string& targetFile, const char* destinationDir)
+Import::Import(const std::string& targetFile, const std::string& destinationDir)
 	: Command(IMPORT_COMMAND), targetFile(targetFile), destinationDir(destinationDir)
 {
 }
@@ -149,7 +149,8 @@ Import* Import::clone() const
 
 void Import::execute(FileSystem* sys) const
 {
-	sys->importFile(targetFile, destinationDir);
+	if (sys->importFile(targetFile, destinationDir) == false)
+		std::cout << "Could not import file " << targetFile << std::endl;
 }
 
 Status::Status(const std::vector<std::string>& targetFiles)
@@ -180,4 +181,19 @@ Exit* Exit::clone() const
 void Exit::execute(FileSystem* sys) const
 {
 	sys->exit();
+}
+
+Locate::Locate()
+	: Command(LOCATE_COMMAND)
+{
+}
+
+Locate* Locate::clone() const
+{
+	return new Locate(*this);
+}
+
+void Locate::execute(FileSystem* sys) const
+{
+
 }

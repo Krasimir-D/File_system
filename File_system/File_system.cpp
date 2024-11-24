@@ -6,6 +6,7 @@
 #include "FileSystem.h"
 #include <fstream>
 #include "Utils.h"
+#include "UserInterface.h"
 //enum class Type
 //{
 //	NAME, SIZE, CONTENT, CRDATE, MDATE
@@ -26,8 +27,8 @@
 
 int main()
 {
-	FileSystem sys("MySystem");
-	
+	// scenario 
+	//FileSystem sys("MySystem");	
 	//sys.printWorkingDir();
 	//sys.list();
 	//sys.importFile("to_imp.txt");
@@ -40,6 +41,10 @@ int main()
 	//sys.changeWorkingDir("Dir1");
 	//sys.list();	
 	
+	// AS FAR AS I KNOW EVERY COMMAND SHOULD WORK EXCEPT FOR "cat" and "locate"
+	// IT WILL BE READY NEXT WEEK + ANY POSSIBLE ERROR SHOULD BE FIXED
+
+	UserInterface::getInstance().run();
 }
 
 

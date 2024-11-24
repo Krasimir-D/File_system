@@ -97,8 +97,7 @@ bool CopyCreator::canHandle(const std::vector<std::string>& arguments) const
 
 Copy* CopyCreator::createCommand(const std::vector<std::string>& arguments) const
 {
-	//return new Copy(std::vector<std::string>(arguments.begin() + 1, arguments.end()));
-	return nullptr;
+	return new Copy(std::vector<std::string>(arguments.begin() + 1, arguments.end() - 1), arguments[arguments.size() - 1]);
 }
 
 MakeDirCreator* MakeDirCreator::clone() const
@@ -138,12 +137,12 @@ ImportCreator* ImportCreator::clone() const
 
 bool ImportCreator::canHandle(const std::vector<std::string>& arguments) const
 {
-	return ((arguments[0] == name) && arguments.size() == 3);
+	return ((arguments[0] == name) && arguments.size() == 2);
 }
 
 Import* ImportCreator::createCommand(const std::vector<std::string>& arguments) const
 {
-	return new Import(arguments[1], arguments[2].c_str());
+	return new Import(arguments[1].c_str());
 }
 
 StatusCreator* StatusCreator::clone() const

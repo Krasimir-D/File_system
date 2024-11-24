@@ -19,7 +19,7 @@ public:
 	bool changeWorkingDir(const std::string& newDir); // false if it fails to find the specified dir
 	void list(const std::string& targetDir = "");
 	void concatenate(const std::vector<std::string>& files, const char* destination = nullptr); // to do
-	void copy(std::vector<std::string>& files, const std::string& destDirectory); // to do
+	void copy(const std::vector<std::string>& files, const std::string& destDirectory); // to do
 	void remove(const std::vector<std::string>& targetFiles);
 	void makeDirectory(const std::vector<std::string>& directories);
 	void removeDirectory(const std::vector<std::string>& targetDirectories);
@@ -34,8 +34,8 @@ public:
 
 private:
 	bool removeFile(const std::string& path);
-	bool findFile(const std::string& path, File* target);
-	bool findDirectory(const std::string& newDir, Directory*& result);
+	bool findFile(const std::string& path, File*& target) const;
+	bool findDirectory(const std::string& newDir, Directory*& result) const;
 
 private:
 	std::string systemName;

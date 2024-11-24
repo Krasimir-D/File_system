@@ -83,7 +83,7 @@ private:
 class Copy : public Command
 {
 public:
-	Copy(std::vector<std::string>& files, const std::string& destDirectory);
+	Copy(const std::vector<std::string>& files, const std::string& destDirectory);
 
 	virtual Copy* clone() const override;
 
@@ -91,7 +91,7 @@ private:
 	virtual void execute(FileSystem* sys) const override;
 
 private:
-	std::vector<std::string>& files;
+	std::vector<std::string> files;
 	std::string destDirectory;
 	static constexpr char CP_COMMAND[] = "cp";
 };
@@ -146,7 +146,7 @@ private:
 class Import : public Command
 {
 public:
-	Import(const std::string& targetFile, const char* destinationDir = nullptr);
+	Import(const std::string& targetFile, const std::string& = "");
 
 	virtual Import* clone() const override;
 
@@ -177,6 +177,11 @@ private:
 class Locate : public Command
 {
 public:
+	Locate();
+	virtual Locate* clone() const override;
+
+private:
+	virtual void execute(FileSystem* sys) const override;
 
 private:
 	static constexpr char LOCATE_COMMAND[] = "locate";

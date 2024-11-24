@@ -12,14 +12,28 @@ UserInterface& UserInterface::getInstance()
 
 void UserInterface::run()
 {
-	while (fileSystem)
+	// try-catch for salting unexpected exceptions
+	try
 	{
-		std::cout << "> ";
-		std::string commandLine;
-		std::getline(std::cin, commandLine);
-		std::vector<std::string> arguments = Utils::parseCommandLine(commandLine);
-		Command* cmd = CommandsFactory::getFactory().createCommand(arguments);
-
+		while (fileSystem)
+		{
+			std::cout << "> ";
+			std::string commandLine;
+			std::getline(std::cin, commandLine);
+			std::vector<std::string> arguments = Utils::parseCommandLine(commandLine);
+			Command* cmd = CommandsFactory::getFactory().createCommand(arguments);
+			if (!cmd)
+			{
+				std::cout << "Command not recognized!" << std::endl;
+				continue;
+			}
+			(*cmd)(&fileSystem);
+			std::cout << std::endl;
+		}
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
 	}
 }
 

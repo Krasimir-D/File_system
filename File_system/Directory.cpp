@@ -69,6 +69,8 @@ void Directory::addFile(File& newFile, const std::string& targetDir)
 	newFile.setParentRamAddress(this);
 	files.push_back(&newFile);
 	size += newFile.getSize();
+	refreshLastModified();
+	newFile.refreshLastModified();
 }
 
 bool Directory::removeFile(const std::string& name)
@@ -80,6 +82,7 @@ bool Directory::removeFile(const std::string& name)
 		{
 			delete files[i];
 			files.erase(files.begin() + i);
+			this->refreshLastModified();
 			return true;
 		}
 	}

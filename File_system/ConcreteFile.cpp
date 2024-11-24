@@ -50,8 +50,20 @@ DateTime ConcreteFile::getLastModified() const
 	return lastModified;
 }
 
+void ConcreteFile::refreshLastAccessed() const
+{
+	lastAccessed = DateTime();
+}
+
+void ConcreteFile::refreshLastModified()
+{
+	lastModified = DateTime();
+	lastAccessed = DateTime();
+}
+
 void ConcreteFile::stat() const
 {
+	refreshLastAccessed();
 	std::cout << "Id: " << uniqueId << std::endl;
 	std::cout << "Name: " << name << std::endl;
 	std::cout << "Path: " << path << std::endl;
@@ -59,8 +71,8 @@ void ConcreteFile::stat() const
 	std::cout << "Type: " << getTypeStr() << std::endl;
 	std::cout << "Size: " << size << std::endl;
 	std::cout << "Created: " << created.toString() << std::endl;
-	std::cout << "Created: " << lastAccessed.toString() << std::endl;
-	std::cout << "Created: " << lastModified.toString() << std::endl;
+	std::cout << "Last acessed: " << lastAccessed.toString() << std::endl;
+	std::cout << "Last modified: " << lastModified.toString() << std::endl;
 }
 
 
@@ -140,6 +152,8 @@ ConcreteFile::ConcreteFile(Type type)
 ConcreteFile::ConcreteFile(const FileLocationPair& parent, Type type, const std::string& path, const std::string& name, const std::string& directory)
 	: uniqueId(ID++), parent(parent), path(path), name(name), type(type), size(), created(), lastAccessed(), lastModified() 
 {
+	if (path[path.length() - 1] != '/')
+		this->path += "/";
 }
 
 ConcreteFile::ConcreteFile(Type type, const std::string& fileName, const std::string& directory)
