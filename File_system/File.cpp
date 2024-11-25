@@ -7,6 +7,13 @@ File::File()
 {
 }
 
+File::File(const FileLocationPair& parent, const std::string& path, const std::string& name, std::vector<uint8_t>&& content)
+	: ConcreteFile(parent, Type::File, path, name)
+{
+	this->size = content.size();
+	this->content = std::vector<uint8_t>(std::move(content));
+}
+
 File::File(std::ifstream& input, const std::string& destDir)
 	: ConcreteFile(Type::File), content()
 {
@@ -43,6 +50,25 @@ bool File::import(const std::string & filepath, File*& file, const std::string& 
 
 	input.close();
 	return true;
+}
+
+void File::addContent(const std::vector<uint8_t>& newContent)
+{
+	size_t newContSize = newContent.size();
+	for (size_t i = 0; i < newContSize; i++)
+	{
+		content.push_back(newContent[i]);
+	}
+	this->size += newContent.size();
+}
+
+void File::printContent() const
+{
+	size_t size = content.size();
+	for (size_t i = 0; i < size; i++)
+	{
+		std::cout << content[i] << " ";
+	}
 }
 
 bool File::load(std::ifstream& input)

@@ -82,7 +82,7 @@ bool ConcatenateCreator::canHandle(const std::vector<std::string>& arguments) co
 
 Concatenate* ConcatenateCreator::createCommand(const std::vector<std::string>& arguments) const
 {
-	return new Concatenate(std::vector<std::string>(arguments.begin() + 1, arguments.end()));
+	return new Concatenate(std::vector<std::string>(arguments.begin() + 1, arguments.end() - 1), arguments[arguments.size() - 1]);
 }
 
 CopyCreator* CopyCreator::clone() const

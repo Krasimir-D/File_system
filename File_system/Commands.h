@@ -67,7 +67,7 @@ class Concatenate : public Command
 {
 public:
 	// one ctor covers the 3 possible cases
-	Concatenate(const std::vector<std::string>& files, const char* destination = nullptr);
+	Concatenate(const std::vector<std::string>& files, const std::string& destFile = "");
 
 	virtual Concatenate* clone() const override;
 

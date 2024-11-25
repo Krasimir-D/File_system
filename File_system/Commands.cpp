@@ -62,8 +62,8 @@ void List::execute(FileSystem* sys) const
 	sys->list(targerDir);
 }
 
-Concatenate::Concatenate(const std::vector<std::string>& files, const char* destination)
-	: Command(CAT_COMMAND), files(files), destinationFile(destination)
+Concatenate::Concatenate(const std::vector<std::string>& files, const std::string& destFile)
+	: Command(CAT_COMMAND), files(files), destinationFile(destFile)
 {
 }
 

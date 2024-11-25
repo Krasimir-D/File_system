@@ -18,7 +18,7 @@ public:
 	void printWorkingDir() const;
 	bool changeWorkingDir(const std::string& newDir); // false if it fails to find the specified dir
 	void list(const std::string& targetDir = "");
-	void concatenate(const std::vector<std::string>& files, const char* destination = nullptr); // to do
+	void concatenate(const std::vector<std::string>& files, const std::string& destinationFile = ""); // to do
 	void copy(const std::vector<std::string>& files, const std::string& destDirectory); // to do
 	void remove(const std::vector<std::string>& targetFiles);
 	void makeDirectory(const std::vector<std::string>& directories);

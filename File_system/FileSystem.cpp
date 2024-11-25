@@ -284,6 +284,60 @@ void FileSystem::list(const std::string& targetDir)
 	temp->refreshLastAccessed();
 }
 
-void FileSystem::concatenate(const std::vector<std::string>& files, const char* destination)
+void FileSystem::concatenate(const std::vector<std::string>& files, const std::string& destinationFile)
 {
+	// this edge case is covered in the command creators and such input will never reach this function
+	// if (files.size() == 0 && destinationFile.length() == 0)
+
+	File* destination = nullptr;
+	findFile(destinationFile, destination);
+	if (files.size() == 0)
+	{
+		if (destination == nullptr)
+		{
+			std::cout << "Destination file " << destinationFile << " could not be found and concatenation will not be performed!" << std::endl;
+			return;
+		}
+		// data input from the console not ready
+		/*std::vector<std::string> content;
+		std::string currentLine = "";
+		std::cout << "No files were provided, enter content to be added to " << destinationFile << " yourself from the console" << std::endl;
+		std::cout << "To stop the proccess of data inputting enter a dot(.) on a line of its own" << std::endl;
+		while (currentLine != ".")
+		{
+			std::getline(std::cin, currentLine);
+			if (currentLine == ".")
+				break;
+			content.push_back(currentLine);
+		}*/
+	}
+	
+	size_t filesCount = files.size();
+	File* temp = nullptr;
+
+	if (destination == nullptr)
+	{
+		for (size_t i = 0; i < filesCount; i++)
+		{
+			if (findFile(files[i], temp) == false)
+			{
+				std::cout << "File " << files[i] << " could not be found and won't be concatenated!" << std::endl;
+				continue;
+			}
+
+			temp->printContent();
+		}
+		return;
+	}
+
+	for (size_t i = 0; i < filesCount; i++)
+	{
+		if (findFile(files[i], temp) == false)
+		{
+			std::cout << "File " << files[i] << " could not be found and won't be concatenated!" << std::endl;
+			continue;
+		}
+
+		destination->addContent(temp->getContent());
+	}
 }
