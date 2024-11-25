@@ -82,6 +82,11 @@ bool ConcatenateCreator::canHandle(const std::vector<std::string>& arguments) co
 
 Concatenate* ConcatenateCreator::createCommand(const std::vector<std::string>& arguments) const
 {
+	// case with no destination specified
+	if (arguments.size() == 2)
+		return new Concatenate(std::vector<std::string>(arguments.begin() + 1, arguments.end()));
+	
+	// case where the destination is specified
 	return new Concatenate(std::vector<std::string>(arguments.begin() + 1, arguments.end() - 1), arguments[arguments.size() - 1]);
 }
 

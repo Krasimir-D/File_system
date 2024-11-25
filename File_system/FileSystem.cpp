@@ -214,6 +214,9 @@ bool FileSystem::removeFile(const std::string& path)
 
 bool FileSystem::findFile(const std::string& path, File*& target) const
 {
+	if (path.length() == 0)
+		return false;
+
 	std::vector<std::string> arguments;
 	Utils::splitUnixFilePath(path, arguments);
 	size_t tempCnt = arguments.size();

@@ -74,7 +74,7 @@ Concatenate* Concatenate::clone() const
 
 void Concatenate::execute(FileSystem* sys) const
 {
-	sys->concatenate(files, destinationFile.c_str());
+	sys->concatenate(files, destinationFile);
 }
 
 Copy::Copy(const std::vector<std::string>& files, const std::string& destDirectory)
