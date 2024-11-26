@@ -14,6 +14,8 @@ static ImportCreator _9;
 static StatusCreator _10;
 static LocateCreator _11;
 static ExitCreator _12;
+static ClearConsoleCreator _13;
+static PrintCreator _14;
 
 CommandCreator::CommandCreator(const std::string& name)
 	: name(name)
@@ -208,4 +210,29 @@ bool RemoveCreator::canHandle(const std::vector<std::string>& arguments) const
 Remove* RemoveCreator::createCommand(const std::vector<std::string>& arguments) const
 {
 	return new Remove(std::vector<std::string>(arguments.begin() + 1, arguments.end()));
+}
+
+ClearConsoleCreator* ClearConsoleCreator::clone() const
+{
+	return new ClearConsoleCreator(*this);
+}
+
+ClearConsole* ClearConsoleCreator::createCommand(const std::vector<std::string>& arguments) const
+{
+	return new ClearConsole();
+}
+
+PrintCreator* PrintCreator::clone() const
+{
+	return new PrintCreator(*this);
+}
+
+bool PrintCreator::canHandle(const std::vector<std::string>& arguments) const
+{
+	return ((arguments[0] == name) && (arguments.size() == 2));
+}
+
+PrintContent* PrintCreator::createCommand(const std::vector<std::string>& arguments) const
+{
+	return new PrintContent(arguments[1]);
 }

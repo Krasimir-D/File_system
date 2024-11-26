@@ -18,6 +18,16 @@ protected:
 	const std::string name;
 };
 
+// this command does not really belong here but a single command does not justify making a class hierarchy of it's own
+class ClearConsoleCreator : public CommandCreator
+{
+public:
+	ClearConsoleCreator() : CommandCreator("clear") {}
+	virtual ClearConsoleCreator* clone() const override;
+
+	virtual ClearConsole* createCommand(const std::vector<std::string>& arguments) const override;
+};
+
 class PrintWorkingDirCreator : public CommandCreator
 {
 public:
@@ -125,6 +135,16 @@ public:
 
 	virtual bool canHandle(const std::vector<std::string>& arguments) const override;
 	virtual Locate* createCommand(const std::vector<std::string>& arguments) const override;
+};
+
+class PrintCreator : public CommandCreator
+{
+public:
+	PrintCreator() : CommandCreator("print") {}
+	virtual PrintCreator* clone() const override;
+
+	virtual bool canHandle(const std::vector<std::string>& arguments) const override;
+	virtual PrintContent* createCommand(const std::vector<std::string>& arguments) const override;
 };
 
 class ExitCreator : public CommandCreator

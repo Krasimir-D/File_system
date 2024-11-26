@@ -157,6 +157,19 @@ void FileSystem::status(const std::vector<std::string>& targetFiles) const
 	}
 }
 
+void FileSystem::printFileContent(const std::string& targetFile) const
+{
+	File* temp = nullptr;
+	if (findFile(targetFile, temp) == false)
+	{
+		std::cout << "File " << targetFile << " could not be found!" << std::endl;
+		return;
+	}
+
+	temp->printContent();
+	std::cout << std::endl;
+}
+
 void FileSystem::locate() const
 {
 }

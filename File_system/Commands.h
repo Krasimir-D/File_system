@@ -8,7 +8,7 @@ public:
 	virtual ~Command() = default;
 
 	virtual Command* clone() const = 0;
-	void operator()(FileSystem* sys);
+	void operator()(FileSystem* sys = nullptr);
 	const std::string& getType() const;
 
 protected:
@@ -16,6 +16,22 @@ protected:
 
 private:
 	virtual void execute(FileSystem* sys) const = 0;
+};
+
+// this command does not really belong here, because it does not modify the system in any way
+// despite that, making a separate hierarchy for a single command would not be justified
+// this command serves on purpose only - to help the user
+class ClearConsole : public Command
+{
+public:
+	ClearConsole();
+
+	virtual ClearConsole* clone() const override;
+
+private:
+	virtual void execute(FileSystem* sys = nullptr) const override;
+private:
+	static constexpr char CLEAR_COMMAND[] = "clear";
 };
 
 // pwd command - lists the path to the working directory
@@ -185,6 +201,21 @@ private:
 
 private:
 	static constexpr char LOCATE_COMMAND[] = "locate";
+};
+
+// this command prints the content of a file on the console
+class PrintContent : public Command
+{
+public:
+	PrintContent(const std::string& targetFile);
+	virtual PrintContent* clone() const override;
+	
+private:
+	virtual void execute(FileSystem* sys) const override;
+
+private:
+	std::string targetFile;
+	static constexpr char PRINT_COMMAND[] = "print";
 };
 
 class Exit : public Command

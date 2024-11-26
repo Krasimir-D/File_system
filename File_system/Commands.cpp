@@ -197,3 +197,33 @@ void Locate::execute(FileSystem* sys) const
 {
 
 }
+
+ClearConsole::ClearConsole()
+	: Command(CLEAR_COMMAND)
+{
+}
+
+ClearConsole* ClearConsole::clone() const
+{
+	return new ClearConsole(*this);
+}
+
+void ClearConsole::execute(FileSystem* sys) const
+{
+	system("cls");
+}
+
+PrintContent::PrintContent(const std::string& targetFile)
+	: Command(PRINT_COMMAND), targetFile(targetFile)
+{
+}
+
+PrintContent* PrintContent::clone() const
+{
+	return new PrintContent(*this);
+}
+
+void PrintContent::execute(FileSystem* sys) const
+{
+	sys->printFileContent(targetFile);
+}

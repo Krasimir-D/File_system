@@ -69,7 +69,7 @@ void ConcreteFile::stat() const
 	std::cout << "Path: " << path << std::endl;
 	std::cout << "Parent: " << parent.hardAddress << std::endl;
 	std::cout << "Type: " << getTypeStr() << std::endl;
-	std::cout << "Size: " << size << std::endl;
+	std::cout << "Size: " << size << " bytes" << std::endl;
 	std::cout << "Created: " << created.toString() << std::endl;
 	std::cout << "Last acessed: " << lastAccessed.toString() << std::endl;
 	std::cout << "Last modified: " << lastModified.toString() << std::endl;

@@ -18,13 +18,15 @@ public:
 	void printWorkingDir() const;
 	bool changeWorkingDir(const std::string& newDir); // false if it fails to find the specified dir
 	void list(const std::string& targetDir = "");
-	void concatenate(const std::vector<std::string>& files, const std::string& destinationFile = ""); // to do
-	void copy(const std::vector<std::string>& files, const std::string& destDirectory); // to do
+	void concatenate(const std::vector<std::string>& files, const std::string& destinationFile = "");
+	void copy(const std::vector<std::string>& files, const std::string& destDirectory);
 	void remove(const std::vector<std::string>& targetFiles);
 	void makeDirectory(const std::vector<std::string>& directories);
 	void removeDirectory(const std::vector<std::string>& targetDirectories);
 	bool importFile(const std::string& targetFile, const std::string& targetDir = "");
 	void status(const std::vector<std::string>& targetFiles) const;
+	// this command is used for printing the content of a file an helping the user check the result of operations like concatenate
+	void printFileContent(const std::string& targetFile) const;
 	void locate() const;  // TO_DO: filter logic 
 	void exit();
 
