@@ -18,6 +18,18 @@ private:
 	virtual void execute(FileSystem* sys) const = 0;
 };
 
+class Help : public Command
+{
+public:
+	Help();
+	virtual Help* clone() const override;
+
+private:
+	virtual void execute(FileSystem* sys = nullptr) const override;
+private:
+	static constexpr char HELP_COMMAND[] = "help";
+};
+
 // this command does not really belong here, because it does not modify the system in any way
 // despite that, making a separate hierarchy for a single command would not be justified
 // this command serves on purpose only - to help the user
@@ -193,13 +205,14 @@ private:
 class Locate : public Command
 {
 public:
-	Locate();
+	Locate(const std::vector<std::string>& arguments);
 	virtual Locate* clone() const override;
 
 private:
 	virtual void execute(FileSystem* sys) const override;
 
 private:
+	std::vector<std::string> arguments;
 	static constexpr char LOCATE_COMMAND[] = "locate";
 };
 

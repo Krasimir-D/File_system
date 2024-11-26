@@ -43,7 +43,6 @@ int main()
 	
 	// AS FAR AS I KNOW EVERY COMMAND SHOULD WORK EXCEPT FOR "cat" and "locate"
 	// IT WILL BE READY NEXT WEEK + ANY POSSIBLE ERROR SHOULD BE FIXED
-
 	UserInterface::getInstance().run();
 	/*std::vector<std::string> content;
 	std::string lineInput = "";

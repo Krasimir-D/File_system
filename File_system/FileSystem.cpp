@@ -170,9 +170,6 @@ void FileSystem::printFileContent(const std::string& targetFile) const
 	std::cout << std::endl;
 }
 
-void FileSystem::locate() const
-{
-}
 
 void FileSystem::exit()
 {

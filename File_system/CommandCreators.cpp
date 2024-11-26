@@ -16,6 +16,7 @@ static LocateCreator _11;
 static ExitCreator _12;
 static ClearConsoleCreator _13;
 static PrintCreator _14;
+static HelpCreator _15;
 
 CommandCreator::CommandCreator(const std::string& name)
 	: name(name)
@@ -25,7 +26,7 @@ CommandCreator::CommandCreator(const std::string& name)
 
 bool CommandCreator::canHandle(const std::vector<std::string>& arguments) const
 {
-	return arguments[0] == name;
+	return ((arguments[0] == name) && (arguments.size() == 1));
 }
 
 PrintWorkingDirCreator* PrintWorkingDirCreator::clone() const
@@ -235,4 +236,14 @@ bool PrintCreator::canHandle(const std::vector<std::string>& arguments) const
 PrintContent* PrintCreator::createCommand(const std::vector<std::string>& arguments) const
 {
 	return new PrintContent(arguments[1]);
+}
+
+HelpCreator* HelpCreator::clone() const
+{
+	return new HelpCreator(*this);
+}
+
+Help* HelpCreator::createCommand(const std::vector<std::string>& arguments) const
+{
+	return new Help();
 }

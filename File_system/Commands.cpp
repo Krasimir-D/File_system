@@ -183,8 +183,8 @@ void Exit::execute(FileSystem* sys) const
 	sys->exit();
 }
 
-Locate::Locate()
-	: Command(LOCATE_COMMAND)
+Locate::Locate(const std::vector<std::string>& arguments)
+	: Command(LOCATE_COMMAND), arguments(arguments)
 {
 }
 
@@ -226,4 +226,34 @@ PrintContent* PrintContent::clone() const
 void PrintContent::execute(FileSystem* sys) const
 {
 	sys->printFileContent(targetFile);
+}
+
+Help::Help()
+	: Command(HELP_COMMAND)
+{
+}
+
+Help* Help::clone() const
+{
+	return new Help(*this);
+}
+
+void Help::execute(FileSystem* sys) const
+{
+	std::cout << "COMMANDS LIST:" << std::endl;
+	std::cout << "> pwd" << std::endl;
+	std::cout << "> cd <directory>" << std::endl;
+	std::cout << "> ls <directory>" << std::endl;
+	std::cout << "> cat <f1, f2, ..., fn> <destination_f>" << std::endl;
+	std::cout << "> cp <f1, f2, ..., fn> <destination_dir>" << std::endl;
+	std::cout << "> rm <f1, f2, ..., fn>" << std::endl;
+	std::cout << "> mkdir <d1, d2, ..., dn>" << std::endl;
+	std::cout << "> rmdir <d1, d2, ..., dn>" << std::endl;
+	std::cout << "> import <target_f> <destination_dir>" << std::endl;
+	std::cout << "> stat <f1, f2, ..., fn>" << std::endl;
+	std::cout << "> print <target_f>" << std::endl;
+	std::cout << "> clear" << std::endl;
+	std::cout << "> exit" << std::endl;
+	std::cout << "> help" << std::endl;
+	std::cout << "> locate IS NOT SUPPORTED YET" << std::endl;
 }

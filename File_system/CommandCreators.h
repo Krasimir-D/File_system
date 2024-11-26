@@ -18,6 +18,7 @@ protected:
 	const std::string name;
 };
 
+
 // this command does not really belong here but a single command does not justify making a class hierarchy of it's own
 class ClearConsoleCreator : public CommandCreator
 {
@@ -27,6 +28,16 @@ public:
 
 	virtual ClearConsole* createCommand(const std::vector<std::string>& arguments) const override;
 };
+
+// this command does not really belong here but a single command does not justify making a class hierarchy of it's own
+class HelpCreator : public CommandCreator
+{
+public:
+	HelpCreator() : CommandCreator("help") {}
+	virtual  HelpCreator* clone() const override;
+	virtual Help* createCommand(const std::vector<std::string>& arguments) const override;
+};
+
 
 class PrintWorkingDirCreator : public CommandCreator
 {

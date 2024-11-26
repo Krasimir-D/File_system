@@ -5,10 +5,10 @@ class FileSystem
 {	
 public:
 	FileSystem(const std::string& name);
-	FileSystem(const FileSystem& other);
+	/*FileSystem(const FileSystem& other);
 	FileSystem& operator=(const FileSystem& other);
 	FileSystem(FileSystem&& other);
-	FileSystem& operator=(FileSystem&& other);
+	FileSystem& operator=(FileSystem&& other);*/
 	~FileSystem();
 
 	// if the "isActive" flag is set to true then return true
@@ -27,6 +27,7 @@ public:
 	void status(const std::vector<std::string>& targetFiles) const;
 	// this command is used for printing the content of a file an helping the user check the result of operations like concatenate
 	void printFileContent(const std::string& targetFile) const;
+	template<typename Relation, typename Val>
 	void locate() const;  // TO_DO: filter logic 
 	void exit();
 
@@ -45,4 +46,5 @@ private:
 	Directory* toggledDir;
 	bool isActive;
 };
+
 
